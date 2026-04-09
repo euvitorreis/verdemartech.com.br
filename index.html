@@ -513,6 +513,8 @@ body.c-hover #cursor-dot{transform:translate(-50%,-50%) scale(1.9);opacity:.7}
   background:var(--bg3);border:1px solid var(--border);color:var(--text2);
 }
 .tag.tag-accent{background:rgba(45,138,86,.18);border-color:var(--green-3);color:var(--green-5)}
+.tag.tag-dev{background:rgba(245,158,11,.15);border-color:rgba(245,158,11,.5);color:#d97706}
+.project-card--social{border-color:rgba(245,158,11,.3);}
 .project-card h3{
   font-family:'Playfair Display',serif;font-size:1rem;font-weight:600;
   margin-bottom:8px;color:var(--text);
@@ -912,6 +914,8 @@ footer::before{
 [data-theme="light"] .project-card h3{color:var(--text)}
 [data-theme="light"] .tag{background:var(--bg3);border-color:rgba(13,79,46,.2);color:var(--text2)}
 [data-theme="light"] .tag.tag-accent{background:rgba(13,79,46,.1);border-color:var(--green-2);color:var(--green-2)}
+[data-theme="light"] .tag.tag-dev{background:rgba(217,119,6,.1);border-color:rgba(217,119,6,.4);color:#b45309}
+[data-theme="light"] .project-card--social{border-color:rgba(217,119,6,.25);}
 [data-theme="light"] .stat-card{background:#fff;border-color:rgba(13,79,46,.2);box-shadow:0 2px 10px rgba(13,79,46,.06)}
 [data-theme="light"] .stat-card strong{color:var(--green-2)}
 [data-theme="light"] .pillar{background:#fff;border-color:rgba(13,79,46,.18)}
@@ -1089,7 +1093,7 @@ footer::before{
     </div>
     <div class="stats-grid reveal">
       <div class="stat-card">
-        <strong>7</strong>
+        <strong>4</strong>
         <span data-i18n="stat_patents">Patentes Depositadas</span>
       </div>
       <div class="stat-card">
@@ -1188,6 +1192,7 @@ footer::before{
       <button class="filter-tab" data-filter="construcao" onclick="filterProjects('construcao',this)" role="tab" data-i18n="filter_construction">Construção</button>
       <button class="filter-tab" data-filter="conectividade" onclick="filterProjects('conectividade',this)" role="tab" data-i18n="filter_tech">Conectividade</button>
       <button class="filter-tab" data-filter="software" onclick="filterProjects('software',this)" role="tab" data-i18n="filter_software">Softwares</button>
+      <button class="filter-tab" data-filter="social" onclick="filterProjects('social',this)" role="tab" data-i18n="filter_social">Social</button>
     </div>
 
     <div class="projects-grid" id="projectsGrid">
@@ -1196,7 +1201,7 @@ footer::before{
       <article class="project-card" data-category="agua">
         <div class="card-top">
           <div class="card-tags">
-            <span class="tag">Saneamento</span><span class="tag">Social</span><span class="tag tag-accent">Patente</span>
+            <span class="tag">Saneamento</span><span class="tag">Social</span><span class="tag">Água</span>
           </div>
           <h3>Wetlands Verdemar</h3>
         </div>
@@ -1206,7 +1211,7 @@ footer::before{
       <article class="project-card" data-category="agua">
         <div class="card-top">
           <div class="card-tags">
-            <span class="tag">Água</span><span class="tag">Osmose</span><span class="tag tag-accent">Patente</span>
+            <span class="tag">Água</span><span class="tag">Osmose</span><span class="tag">Térmica</span>
           </div>
           <h3 data-i18n="proj_usina_name">Usina de Condensação Térmica</h3>
         </div>
@@ -1217,7 +1222,7 @@ footer::before{
       <article class="project-card" data-category="energia">
         <div class="card-top">
           <div class="card-tags">
-            <span class="tag">Híbrido</span><span class="tag">Hídrico</span><span class="tag tag-accent">Eólico</span><span class="tag">Solar</span>
+            <span class="tag">Híbrido</span><span class="tag">Hídrico</span><span class="tag">Eólico</span><span class="tag">Solar</span><span class="tag tag-accent">Patente</span>
           </div>
           <h3>Gerador PHP</h3>
         </div>
@@ -1228,7 +1233,7 @@ footer::before{
       <article class="project-card" data-category="construcao">
         <div class="card-top">
           <div class="card-tags">
-            <span class="tag">Construção</span><span class="tag tag-accent">Patente</span><span class="tag">Circular</span>
+            <span class="tag">Construção</span><span class="tag">Circular</span><span class="tag tag-accent">Patente</span>
           </div>
           <h3>Saltria</h3>
         </div>
@@ -1245,11 +1250,31 @@ footer::before{
         <p data-i18n="proj_resorts_desc">Rede de resorts sustentáveis construídos com produtos Saltria. Turismo de impacto zero.</p>
       </article>
 
+      <article class="project-card" data-category="construcao">
+        <div class="card-top">
+          <div class="card-tags">
+            <span class="tag">Coworking</span><span class="tag">Construção</span><span class="tag">Circular</span>
+          </div>
+          <h3>Sal Oceano Work</h3>
+        </div>
+        <p data-i18n="proj_work_desc">Espaços de coworking construídos com os produtos Saltria. Ambientes de trabalho colaborativo com materiais de origem circular e impacto reduzido.</p>
+      </article>
+
+      <article class="project-card" data-category="construcao">
+        <div class="card-top">
+          <div class="card-tags">
+            <span class="tag">Infraestrutura</span><span class="tag">Oceano</span><span class="tag">Circular</span>
+          </div>
+          <h3>Cabonvia</h3>
+        </div>
+        <p data-i18n="proj_cabonvia_desc">Tipo de asfalto produzido com resíduos de pavimentação removidos de vias, plástico reciclado retirado dos oceanos e carbono — aumentando a durabilidade e impermeabilidade das estradas.</p>
+      </article>
+
       <!-- CONECTIVIDADE & INOVAÇÃO -->
       <article class="project-card" data-category="conectividade">
         <div class="card-top">
           <div class="card-tags">
-            <span class="tag">Wi-Fi</span><span class="tag">Conectividade</span><span class="tag">Rede</span>
+            <span class="tag">Wi-Fi</span><span class="tag">Conectividade</span><span class="tag">Rede</span><span class="tag tag-accent">Patente</span>
           </div>
           <h3>MIRA</h3>
         </div>
@@ -1259,7 +1284,7 @@ footer::before{
       <article class="project-card" data-category="conectividade">
         <div class="card-top">
           <div class="card-tags">
-            <span class="tag">Lab</span><span class="tag">Portátil</span><span class="tag">Ambiental</span>
+            <span class="tag">Lab</span><span class="tag">Portátil</span><span class="tag">Ambiental</span><span class="tag tag-accent">Patente</span>
           </div>
           <h3>Cubo Gaia</h3>
         </div>
@@ -1311,6 +1336,17 @@ footer::before{
           <h3>Comanda Fone</h3>
         </div>
         <p data-i18n="proj_comanda_desc">Solução mobile para gestão de pedidos e comandas integrada ao ecossistema.</p>
+      </article>
+
+      <!-- PROJETO SOCIAL -->
+      <article class="project-card project-card--social" data-category="social">
+        <div class="card-top">
+          <div class="card-tags">
+            <span class="tag">Social</span><span class="tag">ONG</span><span class="tag tag-dev">Em Desenvolvimento</span>
+          </div>
+          <h3 data-i18n="proj_social_name">Projeto Social Verdemar</h3>
+        </div>
+        <p data-i18n="proj_social_desc">Iniciativa sem fins lucrativos do ecossistema Verdemar Tech. Levando saneamento, energia limpa e conectividade a comunidades vulneráveis. Em desenvolvimento.</p>
       </article>
 
     </div>
@@ -1714,7 +1750,7 @@ const translations = {
     pillar_systems:'Sistemas & Softwares', pillar_systems_desc:'Plataformas digitais com IA para saúde humana e veterinária',
     proj_eyebrow:'Do Mar à Solução', proj_title:'Projetos sustentáveis<br/>com <span class="accent">impacto real</span>',
     filter_all:'Todos', filter_water:'Água', filter_energy:'Energia',
-    filter_construction:'Construção', filter_tech:'Conectividade', filter_software:'Softwares',
+    filter_construction:'Construção', filter_tech:'Conectividade', filter_software:'Softwares', filter_social:'Social',
     proj_wetlands_desc:'Saneamento por zona de raízes para comunidades. Até 200.000 L/dia.',
     proj_usina_name:'Usina de Condensação Térmica',
     proj_usina_desc:'Reaproveitamento do resíduo (salmoura) das usinas de osmose reversa. Condensação térmica para geração de sal residual destinado à Saltria.',
@@ -1727,6 +1763,9 @@ const translations = {
     proj_pierre_desc:'Plataforma de diagnóstico por imagem com IA. Gera pré-laudos em 90–120 segundos, cálculo automático de SUV, fusão PET/CT e gestão de radiofármacos.',
     proj_marie_desc:'Vertical do Pierre Med para medicina veterinária. Plataforma de diagnóstico por imagem com IA para clínicas e hospitais veterinários.',
     proj_comanda_desc:'Solução mobile para gestão de pedidos e comandas integrada ao ecossistema.',
+    proj_work_desc:'Espaços de coworking construídos com os produtos Saltria. Ambientes de trabalho colaborativo com materiais de origem circular e impacto reduzido.',
+    proj_cabonvia_desc:'Tipo de asfalto produzido com resíduos de pavimentação removidos de vias, plástico reciclado retirado dos oceanos e carbono — aumentando a durabilidade e impermeabilidade das estradas.',
+    proj_social_name:'Projeto Social Verdemar', proj_social_desc:'Iniciativa sem fins lucrativos do ecossistema Verdemar Tech. Levando saneamento, energia limpa e conectividade a comunidades vulneráveis. Em desenvolvimento.',
     osmose_eyebrow:'Usina de Condensação Térmica', osmose_title:'Dos resíduos<br/>à restauração',
     osmose_text:'Reaproveitando o resíduo das usinas de osmose reversa (salmoura), nossa tecnologia de condensação térmica fecha o ciclo hídrico — transformando descarte industrial em recurso renovável. O sal gerado abastece a Saltria para criação de produtos de alvenaria, devolvendo o equilíbrio biológico às nossas águas. (Projeto experimental em desenvolvimento)',
     osmose_stat1:'Reaproveitamento de salmoura', osmose_stat2:'Desperdício hídrico', osmose_stat3:'Destino do sal gerado',
@@ -1751,7 +1790,7 @@ const translations = {
     btn_know_more:'Saiba mais',
     footer_tagline:'Ecossistema de inovação sustentável. Do Mar à Solução — projetos com impacto real no planeta e nas pessoas.',
     footer_nav:'Empresa', footer_proj:'Projetos', footer_contact:'Contato',
-    footer_rights:'Todos os direitos reservados.', footer_patents:'7 patentes depositadas',
+    footer_rights:'Todos os direitos reservados.', footer_patents:'4 patentes depositadas',
     footer_sources:'Fontes de Pesquisa',
     sources_title:'Fontes de Pesquisa',
     sources_intro:'Referências científicas e técnicas que embasam as soluções apresentadas neste site:',
@@ -1817,7 +1856,7 @@ const translations = {
     btn_know_more:'Learn more',
     footer_tagline:'Sustainable innovation ecosystem. From the Sea to Solution — projects with real impact on the planet and people.',
     footer_nav:'Company', footer_proj:'Projects', footer_contact:'Contact',
-    footer_rights:'All rights reserved.', footer_patents:'7 patents filed',
+    footer_rights:'All rights reserved.', footer_patents:'4 patents filed',
     footer_sources:'Research Sources',
     sources_title:'Research Sources',
     sources_intro:'Scientific and technical references supporting the solutions presented on this site:',
@@ -1883,7 +1922,7 @@ const translations = {
     btn_know_more:'Saber más',
     footer_tagline:'Ecosistema de innovación sostenible. Del Mar a la Solución.',
     footer_nav:'Empresa', footer_proj:'Proyectos', footer_contact:'Contacto',
-    footer_rights:'Todos los derechos reservados.', footer_patents:'7 patentes presentadas',
+    footer_rights:'Todos los derechos reservados.', footer_patents:'4 patentes presentadas',
     footer_sources:'Fuentes de Investigación',
     sources_title:'Fuentes de Investigación',
     sources_intro:'Referencias científicas y técnicas que respaldan las soluciones presentadas en este sitio:',
@@ -1912,7 +1951,7 @@ const translations = {
     pillar_systems:'Systèmes & Logiciels', pillar_systems_desc:'Plateformes numériques IA pour la santé humaine et vétérinaire',
     proj_eyebrow:'De la Mer à la Solution', proj_title:'Projets durables<br/>avec un <span class="accent">impact réel</span>',
     filter_all:'Tous', filter_water:'Eau', filter_energy:'Énergie',
-    filter_construction:'Construction', filter_tech:'Connectivité', filter_software:'Logiciels',
+    filter_construction:'Construction', filter_tech:'Connectivité', filter_software:'Logiciels', filter_social:'Social',
     proj_wetlands_desc:'Système de traitement par zone de racines pour communautés. Jusqu\'à 200.000 L/jour.',
     proj_usina_name:'Usine de Condensation Thermique',
     proj_usina_desc:'Réutilisation du résidu (saumure) des usines d\'osmose inverse. Condensation thermique pour générer du sel résiduel destiné à Saltria.',
@@ -1925,6 +1964,9 @@ const translations = {
     proj_pierre_desc:'Plateforme d\'imagerie médicale avec IA. Génère des pré-rapports en 90–120 secondes.',
     proj_marie_desc:'Vertical de Pierre Med pour la médecine vétérinaire. Plateforme IA pour cliniques et hôpitaux vétérinaires.',
     proj_comanda_desc:'Solution mobile de gestion de commandes intégrée à l\'écosystème.',
+    proj_work_desc:'Espaces de coworking construits avec des produits Saltria. Environnements de travail collaboratif avec des matériaux d\'origine circulaire et impact réduit.',
+    proj_cabonvia_desc:'Type d\'asphalte produit avec des déchets de pavé retirés des routes, du plastique recyclé collecté dans les océans et du carbone — augmentant la durabilité et l\'imperméabilité des routes.',
+    proj_social_name:'Projet Social Verdemar', proj_social_desc:'Initiative à but non lucratif de l\'écosystème Verdemar Tech. Apportant assainissement, énergie propre et connectivité aux communautés vulnérables. En développement.',
     osmose_eyebrow:'Usine de Condensation Thermique', osmose_title:'Des déchets<br/>à la restauration',
     osmose_text:'En réutilisant le résidu des usines d\'osmose inverse (saumure), notre technologie ferme le cycle hydrique. Le sel généré alimente Saltria pour des produits de maçonnerie. (Projet expérimental en développement)',
     osmose_stat1:'Réutilisation de la saumure', osmose_stat2:'Gaspillage hydrique', osmose_stat3:'Destination du sel',
@@ -1949,7 +1991,7 @@ const translations = {
     btn_know_more:'En savoir plus',
     footer_tagline:'Écosystème d\'innovation durable. De la Mer à la Solution.',
     footer_nav:'Entreprise', footer_proj:'Projets', footer_contact:'Contact',
-    footer_rights:'Tous droits réservés.', footer_patents:'7 brevets déposés',
+    footer_rights:'Tous droits réservés.', footer_patents:'4 brevets déposés',
     footer_sources:'Sources de Recherche',
     sources_title:'Sources de Recherche',
     sources_intro:'Références scientifiques et techniques soutenant les solutions présentées sur ce site :',
