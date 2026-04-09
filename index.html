@@ -1,0 +1,2120 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Verdemar Tech — Tecnologia com Propósito</title>
+  <meta name="description" content="Ecossistema de inovação sustentável: água potável, energia limpa, construção e conectividade. Onde tecnologia e sustentabilidade se tornam negócios." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+/* ══════════════════════════════════════════════════════
+   TOKENS
+══════════════════════════════════════════════════════ */
+:root {
+  --green-1:#0d4f2e; --green-2:#1a6b3e; --green-3:#2d8a56;
+  --green-4:#3fa86e; --green-5:#56c98a; --green-light:#a8e6c3;
+  --teal:#1a9e80; --ocean:#0a3d62;
+  --sand:#d4a56a; --sand-light:#f0d5a0;
+  --white:#ffffff; --off-white:#f5f7f2;
+  --dark-1:#070f0b; --dark-2:#0e1a12; --dark-3:#142018; --dark-4:#1c2b1f;
+  --gray-1:#8a9e8f; --gray-2:#b5c4ba;
+  --trans:0.35s cubic-bezier(0.4,0,0.2,1);
+}
+[data-theme="dark"]{
+  --bg:#070f0b; --bg2:#0e1a12; --bg3:#142018; --bg4:#1c2b1f;
+  --surface:rgba(20,32,24,.85); --surface2:rgba(26,42,30,.9);
+  --text:#e8f5ee; --text2:#b5c4ba; --text3:#8a9e8f;
+  --border:rgba(56,130,80,.2); --border2:rgba(56,130,80,.35);
+  --glow:rgba(53,200,106,.12); --card-bg:rgba(14,26,18,.9);
+  --nav-bg:rgba(7,15,11,.92); --hero-overlay:rgba(4,10,6,.5);
+  --modal-bg:rgba(14,26,18,.98);
+  /* Logo branca → visível no dark, filtrada para verde no light */
+  --logo-filter:none;
+  --logo-filter-hero:brightness(0) invert(1);
+}
+[data-theme="light"]{
+  --bg:#f0f7f3; --bg2:#ddeee5; --bg3:#c8dfd2; --bg4:#b4d0be;
+  --surface:rgba(255,255,255,.95); --surface2:rgba(240,247,243,.98);
+  --text:#0a2016; --text2:#1e4d2f; --text3:#3d7354;
+  --border:rgba(13,79,46,.25); --border2:rgba(13,79,46,.4);
+  --glow:rgba(13,79,46,.12); --card-bg:rgba(255,255,255,.98);
+  --nav-bg:rgba(240,247,243,.97); --hero-overlay:rgba(4,18,8,.4);
+  --modal-bg:rgba(240,247,243,.99);
+  /* PNG branca → cor verde-escura no light */
+  --logo-filter:brightness(0) saturate(100%) invert(17%) sepia(62%) saturate(800%) hue-rotate(110deg) brightness(88%) contrast(98%);
+  --logo-filter-hero:none;
+}
+
+/* ══════════════════════════════════════════════════════
+   RESET
+══════════════════════════════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Inter',sans-serif;
+  background:var(--bg);color:var(--text);
+  overflow-x:hidden;
+  transition:background var(--trans),color var(--trans);
+}
+
+/* ══════════════════════════════════════════════════════
+   CURSOR
+══════════════════════════════════════════════════════ */
+#cursor-dot{
+  position:fixed;width:9px;height:9px;border-radius:50%;
+  background:var(--green-5);pointer-events:none;z-index:99999;
+  transform:translate(-50%,-50%);left:-50px;top:-50px;
+  transition:left .02s,top .02s,background .45s,transform .2s;
+}
+body.c-hover #cursor-dot{transform:translate(-50%,-50%) scale(1.9);opacity:.7}
+@media(pointer:coarse){#cursor-dot{display:none}}
+
+/* ══════════════════════════════════════════════════════
+   SOUND BUTTON
+══════════════════════════════════════════════════════ */
+#sound-btn{
+  position:fixed;bottom:76px;right:22px;z-index:800;
+  width:42px;height:42px;border-radius:50%;
+  background:rgba(14,26,18,.85);border:1px solid var(--border2);
+  color:var(--green-5);font-size:.88rem;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:all .3s;backdrop-filter:blur(8px);
+  box-shadow:0 4px 20px rgba(0,0,0,.3);
+}
+#sound-btn:hover{background:var(--green-3);color:#fff}
+#sound-btn.muted{opacity:.45}
+#sound-btn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2}
+
+/* ══════════════════════════════════════════════════════
+   NAVBAR
+══════════════════════════════════════════════════════ */
+#navbar{
+  position:fixed;top:0;left:0;right:0;z-index:1000;
+  background:var(--nav-bg);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  transition:all var(--trans);
+}
+.nav-inner{
+  max-width:1280px;margin:0 auto;padding:0 24px;height:64px;
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0}
+.nav-logo img{
+  width:32px;height:32px;object-fit:contain;
+  filter:var(--logo-filter);
+  transition:filter var(--trans);
+  display:block;
+}
+.nav-logo img[src="assets/vt_logo_main.png"]{
+  /* Ensure visibility across themes */
+  min-width:32px;
+}
+.nav-brand{
+  font-family:'Inter',sans-serif;font-weight:800;font-size:.98rem;
+  letter-spacing:-.2px;color:var(--green-5);line-height:1;
+}
+.nav-links{display:flex;align-items:center;gap:2px;list-style:none}
+.nav-links a{
+  padding:7px 11px;border-radius:8px;color:var(--text2);
+  text-decoration:none;font-size:.82rem;font-weight:500;
+  transition:all .2s;white-space:nowrap;
+}
+.nav-links a:hover{background:var(--glow);color:var(--green-5)}
+.nav-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+/* Theme */
+.theme-btn{
+  background:var(--bg3);border:1px solid var(--border);border-radius:8px;
+  padding:7px 10px;cursor:pointer;color:var(--text2);font-size:.85rem;
+  transition:all .2s;line-height:1;display:flex;align-items:center;
+}
+.theme-btn:hover{background:var(--green-3);color:#fff;border-color:var(--green-3)}
+.theme-btn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;pointer-events:none}
+[data-theme="dark"] .icon-sun{display:none}
+[data-theme="light"] .icon-moon{display:none}
+/* Language flags */
+.nav-flags{
+  display:flex;align-items:center;gap:2px;
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:8px;padding:4px 6px;
+}
+.flag-btn{
+  width:26px;height:18px;border-radius:3px;cursor:pointer;
+  border:2px solid transparent;padding:0;background:none;
+  opacity:.55;transition:all .2s;overflow:hidden;display:flex;align-items:center;
+}
+.flag-btn img{width:100%;height:100%;object-fit:cover;border-radius:2px}
+.flag-btn:hover{opacity:1;transform:scale(1.15)}
+.flag-btn.active{opacity:1;border-color:var(--green-5)}
+/* CTA */
+.btn-nav-cta{
+  background:linear-gradient(135deg,var(--green-3),var(--green-4));
+  color:#fff;border:none;border-radius:8px;padding:8px 16px;
+  font-size:.82rem;font-weight:700;cursor:pointer;
+  transition:all .2s;text-decoration:none;white-space:nowrap;
+}
+.btn-nav-cta:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(53,200,106,.3)}
+/* Hamburger */
+.hamburger{
+  display:none;flex-direction:column;justify-content:center;align-items:center;gap:5px;
+  width:40px;height:40px;background:var(--bg3);border:1px solid var(--border);
+  border-radius:8px;cursor:pointer;color:var(--text);padding:0;transition:all .2s;
+}
+.hamburger span{display:block;width:18px;height:2px;background:currentColor;border-radius:2px;transition:all .3s}
+.hamburger:hover{background:var(--green-3);color:#fff}
+.hamburger.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
+.hamburger.open span:nth-child(2){opacity:0;transform:scaleX(0)}
+.hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
+
+/* ══════════════════════════════════════════════════════
+   MOBILE DRAWER
+══════════════════════════════════════════════════════ */
+#drawer-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.6);
+  backdrop-filter:blur(4px);z-index:1999;
+  opacity:0;pointer-events:none;transition:opacity .3s;
+}
+#drawer-overlay.open{opacity:1;pointer-events:all}
+#mobile-drawer{
+  position:fixed;top:0;right:-100%;
+  width:min(300px,82vw);height:100%;
+  background:var(--bg2);border-left:1px solid var(--border2);
+  z-index:2000;transition:right .35s cubic-bezier(.4,0,.2,1);
+  display:flex;flex-direction:column;
+}
+#mobile-drawer.open{right:0}
+.drawer-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px 20px;border-bottom:1px solid var(--border);
+}
+.drawer-logo-row{display:flex;align-items:center;gap:10px}
+.drawer-logo-row img{width:28px;height:28px;object-fit:contain;filter:var(--logo-filter)}
+.drawer-logo-row span{font-weight:800;font-size:.92rem;color:var(--green-5)}
+.drawer-close{
+  background:var(--bg3);border:1px solid var(--border);border-radius:8px;
+  width:34px;height:34px;cursor:pointer;color:var(--text);
+  display:flex;align-items:center;justify-content:center;font-size:.85rem;transition:all .2s;
+}
+.drawer-close:hover{background:#c0392b;color:#fff;border-color:#c0392b}
+.drawer-close svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;pointer-events:none}
+.drawer-nav{flex:1;overflow-y:auto;padding:12px}
+.drawer-nav a{
+  display:block;padding:13px 14px;border-radius:10px;
+  color:var(--text2);text-decoration:none;font-size:.9rem;font-weight:500;
+  transition:all .2s;margin-bottom:2px;
+}
+.drawer-nav a:hover{background:var(--bg3);color:var(--text)}
+.drawer-foot{
+  padding:16px 20px;border-top:1px solid var(--border);
+  display:flex;flex-direction:column;gap:14px;
+}
+.drawer-foot-row{display:flex;align-items:center;justify-content:space-between}
+.drawer-foot-row span{font-size:.78rem;color:var(--text3)}
+.drawer-flags{display:flex;gap:6px}
+.d-flag{
+  width:30px;height:20px;border-radius:3px;cursor:pointer;
+  border:2px solid transparent;overflow:hidden;opacity:.55;transition:all .2s;
+}
+.d-flag img{width:100%;height:100%;object-fit:cover}
+.d-flag:hover,.d-flag.active{opacity:1;border-color:var(--green-5)}
+.drawer-cta{
+  display:block;text-align:center;
+  background:linear-gradient(135deg,var(--green-3),var(--green-4));
+  color:#fff;border:none;border-radius:10px;padding:13px;
+  font-size:.9rem;font-weight:700;cursor:pointer;text-decoration:none;transition:all .2s;
+}
+
+/* ══════════════════════════════════════════════════════
+   HERO — full screen video
+══════════════════════════════════════════════════════ */
+#hero{
+  position:relative;width:100%;height:100vh;min-height:600px;
+  overflow:hidden;display:flex;align-items:center;justify-content:center;
+}
+.hero-video{
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;z-index:0;
+}
+.hero-overlay{
+  position:absolute;inset:0;z-index:1;
+  background:linear-gradient(to bottom,
+    rgba(4,10,6,.3) 0%,
+    rgba(4,10,6,.15) 40%,
+    rgba(4,10,6,.7) 100%);
+}
+/* Centered logo */
+.hero-center{
+  position:relative;z-index:3;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;gap:20px;
+  animation:heroIn 1.3s ease forwards;opacity:0;
+}
+@keyframes heroIn{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+/* Hero logo — PNG branca sobre overlay escuro; no light, deixar normal */
+.hero-logo{
+  width:clamp(110px,14vw,180px);height:clamp(110px,14vw,180px);
+  object-fit:contain;
+  filter:drop-shadow(0 0 50px rgba(86,201,138,.55)) drop-shadow(0 0 100px rgba(86,201,138,.22));
+  animation:logoFloat 5s ease-in-out infinite;
+  display:block;
+}
+[data-theme="light"] .hero-logo{
+  filter:drop-shadow(0 0 30px rgba(13,79,46,.5)) drop-shadow(0 0 60px rgba(86,201,138,.3)) brightness(0) saturate(100%) invert(17%) sepia(62%) saturate(800%) hue-rotate(110deg) brightness(1.4) contrast(1.1);
+}
+@keyframes logoFloat{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-14px) scale(1.03)}}
+.hero-brand{
+  font-family:'Inter',sans-serif;font-size:clamp(1.7rem,3.8vw,2.8rem);
+  font-weight:800;color:#fff;letter-spacing:-.4px;
+  text-shadow:0 2px 28px rgba(0,0,0,.7);
+}
+.hero-brand .g{color:var(--green-5)}
+.hero-pill{
+  background:rgba(7,15,11,.5);backdrop-filter:blur(10px);
+  border:1px solid rgba(86,201,138,.35);border-radius:50px;
+  padding:9px 26px;font-size:clamp(.8rem,1.4vw,1rem);
+  font-weight:600;color:rgba(255,255,255,.92);letter-spacing:.2px;
+}
+/* Scroll hint */
+.hero-scroll{
+  position:absolute;bottom:30px;left:50%;transform:translateX(-50%);
+  z-index:3;display:flex;flex-direction:column;align-items:center;gap:5px;
+  color:rgba(255,255,255,.5);font-size:.72rem;letter-spacing:1px;text-transform:uppercase;
+  animation:scrollBounce 2s ease-in-out infinite;
+}
+@keyframes scrollBounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(7px)}}
+.hero-scroll svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.5}
+
+/* ══════════════════════════════════════════════════════
+   SECTION TRANSITIONS — smooth gradient blends
+══════════════════════════════════════════════════════ */
+/* Every section that needs a gradient fade between sections */
+.fade-into-next::after{
+  content:'';display:block;height:120px;
+  background:linear-gradient(to bottom,transparent,var(--bg2));
+  margin-top:-1px;
+}
+.fade-into-dark::after{
+  content:'';display:block;height:120px;
+  background:linear-gradient(to bottom,transparent,var(--bg));
+}
+
+/* ══════════════════════════════════════════════════════
+   INTRO SECTION
+══════════════════════════════════════════════════════ */
+#intro{
+  background:var(--bg2);
+  padding:100px 24px 90px;
+  position:relative;
+}
+#intro::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:80px;
+  background:linear-gradient(to bottom,var(--bg),var(--bg2));
+}
+.intro-inner{
+  max-width:1100px;margin:0 auto;
+  display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;
+}
+.badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(45,138,86,.15);border:1px solid var(--green-3);
+  border-radius:50px;padding:5px 14px;
+  font-size:.72rem;font-weight:700;color:var(--green-5);
+  letter-spacing:.6px;text-transform:uppercase;margin-bottom:22px;
+}
+.badge-dot{width:6px;height:6px;background:var(--green-5);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.3)}}
+.intro-title{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2rem,4vw,3.2rem);font-weight:700;
+  line-height:1.15;margin-bottom:18px;letter-spacing:-.5px;
+}
+.intro-title .accent{color:var(--green-5)}
+.intro-sub{font-size:.96rem;color:var(--text2);line-height:1.75;margin-bottom:32px;max-width:480px}
+.btns{display:flex;gap:12px;flex-wrap:wrap}
+.btn-primary{
+  background:linear-gradient(135deg,var(--green-3),var(--green-4));
+  color:#fff;border:none;border-radius:12px;padding:14px 30px;
+  font-size:.92rem;font-weight:700;cursor:pointer;transition:all .25s;
+  text-decoration:none;display:inline-flex;align-items:center;gap:8px;
+}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(53,200,106,.35)}
+.btn-outline{
+  background:transparent;color:var(--text);
+  border:1px solid var(--border2);border-radius:12px;
+  padding:14px 30px;font-size:.92rem;font-weight:600;
+  cursor:pointer;transition:all .25s;text-decoration:none;
+  display:inline-flex;align-items:center;gap:8px;
+}
+.btn-outline:hover{background:var(--glow);border-color:var(--green-4);color:var(--green-5)}
+.stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.stat-card{
+  background:var(--card-bg);border:1px solid var(--border);
+  border-radius:16px;padding:24px;text-align:center;transition:all .2s;
+}
+.stat-card:hover{border-color:var(--green-4);box-shadow:0 8px 24px var(--glow)}
+.stat-card strong{
+  display:block;font-family:'Playfair Display',serif;
+  font-size:2.2rem;font-weight:700;color:var(--green-5);margin-bottom:5px;
+}
+.stat-card span{font-size:.78rem;color:var(--text3)}
+
+/* ══════════════════════════════════════════════════════
+   IMAGE CTA SECTION — "REGENERE SEUS RESÍDUOS" — SPLIT LAYOUT
+══════════════════════════════════════════════════════ */
+#regen-cta{
+  position:relative;overflow:hidden;
+  background:var(--bg);
+}
+/* Split: texto esquerda 50%, imagem direita 50% */
+.regen-split{
+  max-width:1280px;margin:0 auto;
+  display:grid;grid-template-columns:1fr 1fr;
+  align-items:stretch;min-height:520px;
+}
+.regen-text-col{
+  padding:80px 60px 80px 24px;
+  display:flex;flex-direction:column;justify-content:center;
+  position:relative;z-index:2;
+}
+.regen-img-col{
+  position:relative;overflow:hidden;
+  min-height:420px;
+}
+.regen-img-col img{
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;object-position:center;
+  transition:transform .6s ease;
+}
+#regen-cta:hover .regen-img-col img{transform:scale(1.04)}
+.regen-eyebrow{
+  font-size:.72rem;font-weight:700;letter-spacing:1.5px;
+  text-transform:uppercase;color:var(--green-5);margin-bottom:14px;
+  display:flex;align-items:center;gap:8px;
+}
+.regen-eyebrow::before{content:'';display:block;width:22px;height:2px;background:var(--green-5)}
+.regen-title{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2rem,4.5vw,3.6rem);font-weight:700;
+  line-height:1.15;color:var(--text);margin-bottom:20px;
+}
+.regen-text{
+  font-size:.96rem;color:var(--text2);line-height:1.75;
+  max-width:500px;margin-bottom:32px;
+}
+/* gradient below regen-cta into sobre */
+#regen-cta::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:80px;
+  background:linear-gradient(to bottom,transparent,var(--bg));
+  z-index:3;pointer-events:none;
+}
+
+/* ══════════════════════════════════════════════════════
+   COMMONS — section
+══════════════════════════════════════════════════════ */
+.section{padding:96px 24px;position:relative}
+.container{max-width:1280px;margin:0 auto}
+.sec-eyebrow{
+  font-size:.72rem;font-weight:700;letter-spacing:1.5px;
+  text-transform:uppercase;color:var(--green-5);margin-bottom:12px;
+  display:flex;align-items:center;gap:8px;
+}
+.sec-eyebrow::before{content:'';display:block;width:22px;height:2px;background:var(--green-5)}
+.sec-title{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(1.7rem,3.2vw,2.6rem);font-weight:700;
+  line-height:1.2;margin-bottom:14px;letter-spacing:-.3px;
+}
+.sec-title .accent{color:var(--green-5)}
+.sec-sub{color:var(--text2);font-size:.95rem;line-height:1.7;max-width:580px}
+.sec-header{margin-bottom:52px}
+
+/* Gradient separators between sections */
+.section-sep{
+  height:80px;
+  background:linear-gradient(to bottom,var(--bg),var(--bg2));
+}
+.section-sep.rev{
+  background:linear-gradient(to bottom,var(--bg2),var(--bg));
+}
+
+/* ══════════════════════════════════════════════════════
+   SOBRE
+══════════════════════════════════════════════════════ */
+#sobre{background:var(--bg)}
+#sobre::before{
+  content:'';display:block;height:80px;
+  background:linear-gradient(to bottom,var(--bg2),var(--bg));
+  margin-bottom:-40px;
+}
+.about-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:start;
+}
+.about-lead{
+  font-size:.97rem;color:var(--text2);line-height:1.75;
+  margin-bottom:32px;
+}
+.pillars-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:16px;
+}
+.pillar{
+  background:var(--card-bg);border:1px solid var(--border);
+  border-radius:14px;padding:22px 18px;transition:all .2s;
+}
+.pillar:hover{border-color:var(--green-4);box-shadow:0 8px 24px var(--glow);transform:translateY(-2px)}
+.pillar-line{width:28px;height:3px;background:linear-gradient(to right,var(--green-3),var(--green-5));border-radius:2px;margin-bottom:12px}
+.pillar h3{font-size:.88rem;font-weight:700;margin-bottom:6px;color:var(--text)}
+.pillar p{font-size:.78rem;color:var(--text3);line-height:1.55}
+/* Systems pillar (5th) */
+.pillar.systems-pillar .pillar-line{background:linear-gradient(to right,var(--ocean),var(--teal))}
+
+/* ══════════════════════════════════════════════════════
+   PROJETOS
+══════════════════════════════════════════════════════ */
+#projetos{background:var(--bg2)}
+#projetos::before{
+  content:'';display:block;height:80px;
+  background:linear-gradient(to bottom,var(--bg),var(--bg2));
+  margin-bottom:-40px;
+}
+.filter-tabs{
+  display:flex;flex-wrap:wrap;gap:8px;margin-bottom:36px;
+}
+.filter-tab{
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:8px;padding:8px 18px;font-size:.8rem;font-weight:600;
+  color:var(--text3);cursor:pointer;transition:all .2s;
+}
+.filter-tab:hover{border-color:var(--green-4);color:var(--green-5)}
+.filter-tab.active{
+  background:linear-gradient(135deg,var(--green-3),var(--green-4));
+  border-color:transparent;color:#fff;
+}
+.projects-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;
+}
+.project-card{
+  background:var(--card-bg);border:1px solid var(--border);
+  border-radius:16px;overflow:hidden;transition:all .25s;
+  cursor:default;
+}
+.project-card:hover{
+  border-color:var(--green-4);
+  box-shadow:0 16px 48px rgba(0,0,0,.25),0 0 0 1px var(--green-4);
+  transform:translateY(-4px);
+}
+.card-top{
+  padding:22px 22px 0;
+}
+.card-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:14px}
+.tag{
+  padding:3px 9px;border-radius:20px;
+  font-size:.65rem;font-weight:600;
+  background:var(--bg3);border:1px solid var(--border);color:var(--text2);
+}
+.tag.tag-accent{background:rgba(45,138,86,.18);border-color:var(--green-3);color:var(--green-5)}
+.project-card h3{
+  font-family:'Playfair Display',serif;font-size:1rem;font-weight:600;
+  margin-bottom:8px;color:var(--text);
+}
+.project-card p{
+  font-size:.8rem;color:var(--text3);line-height:1.6;
+  padding:0 22px 22px;
+}
+/* Hidden cards */
+.project-card.hidden{display:none}
+/* Card action link */
+.btn-card-link{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:8px 18px;border-radius:8px;font-size:.8rem;font-weight:700;
+  text-decoration:none;transition:all .2s;
+  background:linear-gradient(135deg,var(--green-3),var(--green-4));
+  color:#fff;border:none;
+}
+.btn-card-link:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(53,200,106,.3)}
+
+/* ══════════════════════════════════════════════════════
+   OSMOSE / CONDENSAÇÃO SECTION
+══════════════════════════════════════════════════════ */
+#osmose{
+  position:relative;overflow:hidden;
+  background:var(--bg);
+}
+/* Split: image left, text right */
+.osmose-split{
+  max-width:1280px;margin:0 auto;
+  display:grid;grid-template-columns:1fr 1fr;
+  align-items:stretch;min-height:520px;
+}
+.osmose-img-col{
+  position:relative;overflow:hidden;
+}
+.osmose-img-col img{
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;object-position:center;
+  transition:transform .6s ease;
+}
+#osmose:hover .osmose-img-col img{transform:scale(1.03)}
+.osmose-text-col{
+  padding:80px 24px 80px 60px;
+  position:relative;z-index:2;
+}
+.osmose-title{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(1.8rem,3.8vw,3rem);font-weight:700;
+  line-height:1.2;color:var(--text);margin-bottom:18px;
+}
+.osmose-text{
+  font-size:.94rem;color:var(--text2);line-height:1.75;margin-bottom:28px;
+}
+.osmose-stats{display:flex;gap:28px;flex-wrap:wrap;margin-top:12px}
+.osmose-stat strong{
+  display:block;font-family:'Playfair Display',serif;
+  font-size:1.6rem;font-weight:700;color:var(--green-5);margin-bottom:2px;
+}
+.osmose-stat span{font-size:.75rem;color:var(--text3)}
+#osmose::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:80px;
+  background:linear-gradient(to bottom,var(--bg2),transparent);z-index:3;
+}
+#osmose::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:80px;
+  background:linear-gradient(to top,var(--bg),transparent);z-index:3;
+}
+
+/* ══════════════════════════════════════════════════════
+   MISSÃO, VISÃO, VALORES
+══════════════════════════════════════════════════════ */
+#mvv{background:var(--bg)}
+#mvv::before{
+  content:'';display:block;height:80px;
+  background:linear-gradient(to bottom,var(--bg2),var(--bg));
+  margin-bottom:-40px;
+}
+.mvv-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.mvv-card{
+  background:var(--card-bg);border:1px solid var(--border);
+  border-radius:18px;padding:34px 26px;position:relative;overflow:hidden;
+  transition:all .3s;
+}
+.mvv-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;
+  height:3px;background:linear-gradient(to right,var(--green-3),var(--green-5));
+}
+.mvv-card:hover{transform:translateY(-4px);border-color:var(--green-4);box-shadow:0 18px 46px var(--glow)}
+.mvv-number{
+  font-family:'Playfair Display',serif;
+  font-size:2.6rem;font-weight:700;
+  color:rgba(86,201,138,.15);line-height:1;
+  margin-bottom:12px;
+}
+.mvv-card h3{font-size:1rem;font-weight:700;margin-bottom:12px;color:var(--green-5)}
+.mvv-card p{font-size:.83rem;color:var(--text2);line-height:1.7}
+.mvv-list{list-style:none;display:flex;flex-direction:column;gap:6px}
+.mvv-list li{
+  font-size:.83rem;color:var(--text2);
+  display:flex;align-items:center;gap:8px;
+}
+.mvv-list li::before{
+  content:'';display:block;width:5px;height:5px;
+  border-radius:50%;background:var(--green-5);flex-shrink:0;
+}
+
+/* ══════════════════════════════════════════════════════
+   FUNDADOR
+══════════════════════════════════════════════════════ */
+#fundador{background:var(--bg2)}
+#fundador::before{
+  content:'';display:block;height:80px;
+  background:linear-gradient(to bottom,var(--bg),var(--bg2));
+  margin-bottom:-40px;
+}
+.founder-wrap{max-width:880px;margin:0 auto}
+.founder-card{
+  background:var(--card-bg);border:1px solid var(--border2);
+  border-radius:22px;padding:44px;
+  display:flex;gap:44px;align-items:flex-start;
+  box-shadow:0 18px 55px rgba(0,0,0,.15);
+}
+.founder-photo{
+  flex-shrink:0;width:160px;height:160px;
+  border-radius:50%;
+  overflow:hidden;
+  border:3px solid var(--green-4);
+  box-shadow:0 0 40px rgba(86,201,138,.28);
+  background:linear-gradient(135deg,var(--green-1),var(--green-3));
+  display:flex;align-items:center;justify-content:center;
+}
+.founder-photo img{width:100%;height:100%;object-fit:cover;object-position:center top}
+.founder-photo-placeholder{
+  font-family:'Playfair Display',serif;
+  font-size:2.5rem;font-weight:700;color:rgba(255,255,255,.6);
+}
+.founder-name{
+  font-family:'Playfair Display',serif;
+  font-size:1.5rem;font-weight:600;margin-bottom:4px;
+}
+.founder-role{color:var(--green-5);font-size:.82rem;font-weight:600;margin-bottom:16px}
+.founder-bio{
+  color:var(--text2);font-size:.86rem;line-height:1.75;margin-bottom:22px;
+}
+.founder-links{display:flex;gap:10px;flex-wrap:wrap}
+.f-link{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:8px 16px;border-radius:9px;font-size:.8rem;font-weight:600;
+  text-decoration:none;transition:all .2s;
+  border:1px solid var(--border);background:var(--bg3);color:var(--text2);
+}
+.f-link:hover{border-color:var(--green-4);color:var(--green-5)}
+.f-link.li{color:#0a66c2;border-color:rgba(10,102,194,.25)}
+.f-link.li:hover{background:rgba(10,102,194,.08);border-color:#0a66c2}
+.f-link svg{width:16px;height:16px;flex-shrink:0}
+
+/* ══════════════════════════════════════════════════════
+   CONTATO
+══════════════════════════════════════════════════════ */
+#contato{background:var(--bg)}
+#contato::before{
+  content:'';display:block;height:80px;
+  background:linear-gradient(to bottom,var(--bg2),var(--bg));
+  margin-bottom:-40px;
+}
+.contact-grid{display:grid;grid-template-columns:1fr 1.5fr;gap:60px;align-items:start}
+.contact-info-items{display:flex;flex-direction:column;gap:16px;margin-top:8px}
+.ci{display:flex;align-items:flex-start;gap:14px}
+.ci-icon{
+  width:40px;height:40px;border-radius:10px;
+  background:var(--bg3);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--green-5);flex-shrink:0;
+}
+.ci-icon svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.5}
+.ci-label{font-size:.74rem;font-weight:600;color:var(--text3);margin-bottom:3px;text-transform:uppercase;letter-spacing:.5px}
+.ci-value{font-size:.88rem;color:var(--text2);text-decoration:none;transition:color .2s}
+.ci-value:hover{color:var(--green-5)}
+.ci-social{display:flex;gap:10px;margin-top:20px}
+.soc-link{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:9px 16px;border-radius:9px;
+  text-decoration:none;font-size:.8rem;font-weight:600;
+  transition:all .2s;border:1px solid var(--border);
+  background:var(--bg3);color:var(--text2);
+}
+.soc-link:hover{transform:translateY(-1px)}
+.soc-link.li{color:#0a66c2;border-color:rgba(10,102,194,.25)}
+.soc-link.li:hover{background:rgba(10,102,194,.1);border-color:#0a66c2}
+.soc-link.wa{color:#25d366;border-color:rgba(37,211,102,.25)}
+.soc-link.wa:hover{background:rgba(37,211,102,.08);border-color:#25d366}
+.soc-link svg{width:16px;height:16px;flex-shrink:0}
+/* Form */
+.contact-form{display:flex;flex-direction:column;gap:14px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form-field label{display:block;font-size:.76rem;font-weight:600;color:var(--text3);margin-bottom:5px;text-transform:uppercase;letter-spacing:.4px}
+.form-field input,
+.form-field select,
+.form-field textarea{
+  width:100%;background:var(--bg3);border:1px solid var(--border);
+  border-radius:10px;padding:12px 14px;color:var(--text);
+  font-size:.86rem;font-family:'Inter',sans-serif;
+  transition:border-color .2s;resize:none;appearance:none;
+  -webkit-appearance:none;
+}
+.form-field input:focus,
+.form-field select:focus,
+.form-field textarea:focus{outline:none;border-color:var(--green-4);box-shadow:0 0 0 3px rgba(53,200,106,.08)}
+.form-field select option{background:var(--bg2)}
+.attach-label{
+  display:flex;align-items:center;gap:10px;
+  padding:11px 14px;background:var(--bg3);
+  border:1px dashed var(--border2);border-radius:10px;
+  cursor:pointer;color:var(--text2);font-size:.86rem;transition:all .2s;
+}
+.attach-label:hover{border-color:var(--green-4);color:var(--green-5)}
+.attach-label svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.5;flex-shrink:0}
+#attachFile{display:none}
+.char-counter{font-size:.72rem;color:var(--text3);text-align:right;margin-top:-8px}
+.btn-submit{
+  background:linear-gradient(135deg,var(--green-3),var(--green-4));
+  color:#fff;border:none;border-radius:11px;padding:14px 28px;
+  font-size:.9rem;font-weight:700;cursor:pointer;
+  transition:all .2s;width:100%;display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.btn-submit:hover{transform:translateY(-1px);box-shadow:0 8px 22px rgba(53,200,106,.3)}
+.btn-submit svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2}
+.form-note{
+  font-size:.72rem;color:var(--text3);
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:8px;padding:10px 12px;display:none;
+}
+.form-note.visible{display:block}
+
+/* ══════════════════════════════════════════════════════
+   FOOTER
+══════════════════════════════════════════════════════ */
+footer{
+  background:var(--dark-1);border-top:1px solid var(--border);
+  padding:56px 24px 28px;
+}
+footer::before{
+  content:'';display:block;height:80px;margin:-56px -24px 0;
+  background:linear-gradient(to bottom,var(--bg),var(--dark-1));
+}
+.footer-inner{max-width:1280px;margin:0 auto}
+.footer-top{
+  display:grid;grid-template-columns:1.8fr 1fr 1fr 1fr;
+  gap:40px;margin-bottom:40px;padding-top:40px;
+}
+.footer-logo{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.footer-logo img{width:28px;height:28px;object-fit:contain}
+.footer-logo-name{font-weight:800;font-size:.95rem;color:var(--green-5)}
+.footer-tagline{font-size:.8rem;color:var(--text3);line-height:1.6;margin-bottom:18px}
+.footer-social-row{display:flex;gap:8px}
+.footer-soc{
+  width:34px;height:34px;background:var(--bg3);border:1px solid var(--border);
+  border-radius:8px;display:flex;align-items:center;justify-content:center;
+  color:var(--text3);transition:all .2s;text-decoration:none;
+}
+.footer-soc:hover{background:var(--green-3);color:#fff;border-color:var(--green-4)}
+.footer-soc.li:hover{background:#0a66c2;border-color:#0a66c2}
+.footer-soc.wa:hover{background:#25d366;border-color:#25d366}
+.footer-soc svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2}
+.footer-col h4{
+  font-size:.75rem;font-weight:700;color:var(--text);
+  margin-bottom:14px;text-transform:uppercase;letter-spacing:.5px;
+}
+.footer-col ul{list-style:none;display:flex;flex-direction:column;gap:8px}
+.footer-col ul li a{font-size:.78rem;color:var(--text3);text-decoration:none;transition:color .2s}
+.footer-col ul li a:hover{color:var(--green-5)}
+.footer-bottom{
+  border-top:1px solid var(--border);padding-top:22px;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;
+}
+.footer-bottom p{font-size:.73rem;color:var(--text3)}
+.sources-btn{
+  background:none;border:1px solid var(--border);border-radius:6px;
+  padding:5px 12px;font-size:.72rem;color:var(--text3);
+  cursor:pointer;transition:all .2s;
+}
+.sources-btn:hover{border-color:var(--green-4);color:var(--green-5)}
+
+/* ══════════════════════════════════════════════════════
+   MODAL — FONTES
+══════════════════════════════════════════════════════ */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.8);
+  backdrop-filter:blur(12px);z-index:5000;
+  display:none;align-items:center;justify-content:center;padding:20px;
+}
+.modal-overlay.open{display:flex}
+.modal{
+  background:var(--modal-bg);border:1px solid var(--border2);
+  border-radius:20px;max-width:620px;width:100%;
+  max-height:80vh;overflow-y:auto;
+  box-shadow:0 40px 100px rgba(0,0,0,.6);padding:36px;position:relative;
+}
+.modal h2{font-family:'Playfair Display',serif;font-size:1.4rem;margin-bottom:8px}
+.modal-intro{font-size:.85rem;color:var(--text2);margin-bottom:22px;line-height:1.6}
+.modal-close{
+  position:absolute;top:16px;right:16px;width:32px;height:32px;
+  background:var(--bg3);border:1px solid var(--border);border-radius:8px;
+  cursor:pointer;color:var(--text);display:flex;align-items:center;justify-content:center;
+  transition:all .2s;
+}
+.modal-close:hover{background:#c0392b;color:#fff;border-color:#c0392b}
+.modal-close svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;pointer-events:none}
+.sources-list{list-style:none;display:flex;flex-direction:column;gap:16px}
+.sources-list li{font-size:.82rem;color:var(--text2);line-height:1.6}
+.sources-list strong{display:block;color:var(--text);margin-bottom:3px}
+.sources-list a{color:var(--green-5);text-decoration:none;transition:color .2s}
+.sources-list a:hover{color:var(--green-light);text-decoration:underline}
+
+/* ══════════════════════════════════════════════════════
+   SCROLL TO TOP
+══════════════════════════════════════════════════════ */
+#scroll-top{
+  position:fixed;bottom:22px;right:22px;z-index:700;
+  width:40px;height:40px;border-radius:50%;
+  background:var(--green-3);border:none;cursor:pointer;color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;transform:translateY(20px);transition:all .3s;
+  box-shadow:0 6px 20px rgba(53,200,106,.3);
+}
+#scroll-top.visible{opacity:1;transform:translateY(0)}
+#scroll-top:hover{background:var(--green-4);transform:translateY(-2px)}
+#scroll-top svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2.5}
+
+/* ══════════════════════════════════════════════════════
+   REVEAL ANIMATION
+══════════════════════════════════════════════════════ */
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+/* ══════════════════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════════════════ */
+@media(max-width:1024px){
+  .nav-links{display:none}
+  .btn-nav-cta{display:none}
+  .hamburger{display:flex}
+  .footer-top{grid-template-columns:1fr 1fr}
+  .mvv-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:768px){
+  .intro-inner{grid-template-columns:1fr;gap:36px}
+  .stats-grid{grid-template-columns:repeat(4,1fr)}
+  .about-grid{grid-template-columns:1fr}
+  .pillars-grid{grid-template-columns:1fr 1fr}
+  .mvv-grid{grid-template-columns:1fr}
+  .contact-grid{grid-template-columns:1fr}
+  .founder-card{flex-direction:column;padding:28px;align-items:flex-start}
+  .footer-top{grid-template-columns:1fr;gap:28px}
+  .section{padding:72px 16px}
+  .regen-split{grid-template-columns:1fr;}
+  .regen-text-col{padding:60px 24px 40px;order:1}
+  .regen-img-col{min-height:300px;height:300px;order:2}
+  .osmose-split{grid-template-columns:1fr}
+  .osmose-img-col{min-height:280px;height:280px}
+  .osmose-text-col{padding:60px 16px 60px}
+}
+@media(max-width:560px){
+  .stats-grid{grid-template-columns:repeat(2,1fr)}
+  .form-row{grid-template-columns:1fr}
+  .filter-tabs{gap:5px}
+  .filter-tab{padding:7px 12px;font-size:.76rem}
+  .pillars-grid{grid-template-columns:1fr}
+  .nav-flags{gap:1px;padding:3px 5px}
+  .flag-btn{width:22px;height:16px}
+  .projects-grid{grid-template-columns:1fr}
+  .founder-photo{width:110px;height:110px}
+  .founder-card{padding:22px}
+}
+
+/* ══════════════════════════════════════════════════════
+   ANIMATIONS
+══════════════════════════════════════════════════════ */
+@keyframes spin{
+  to{transform:rotate(360deg)}
+}
+
+/* ══════════════════════════════════════════════════════
+   LIGHT THEME — Contrast & visibility improvements
+══════════════════════════════════════════════════════ */
+[data-theme="light"] #projetos{background:var(--bg2)}
+[data-theme="light"] #projetos::before{background:linear-gradient(to bottom,var(--bg),var(--bg2))}
+[data-theme="light"] .project-card{
+  background:#fff;border:1px solid rgba(13,79,46,.18);
+  box-shadow:0 2px 12px rgba(13,79,46,.07);
+}
+[data-theme="light"] .project-card:hover{
+  border-color:var(--green-3);
+  box-shadow:0 16px 40px rgba(13,79,46,.14),0 0 0 1px var(--green-3);
+}
+[data-theme="light"] .project-card h3{color:var(--text)}
+[data-theme="light"] .tag{background:var(--bg3);border-color:rgba(13,79,46,.2);color:var(--text2)}
+[data-theme="light"] .tag.tag-accent{background:rgba(13,79,46,.1);border-color:var(--green-2);color:var(--green-2)}
+[data-theme="light"] .stat-card{background:#fff;border-color:rgba(13,79,46,.2);box-shadow:0 2px 10px rgba(13,79,46,.06)}
+[data-theme="light"] .stat-card strong{color:var(--green-2)}
+[data-theme="light"] .pillar{background:#fff;border-color:rgba(13,79,46,.18)}
+[data-theme="light"] .mvv-card{background:#fff;border-color:rgba(13,79,46,.18);box-shadow:0 2px 12px rgba(13,79,46,.07)}
+[data-theme="light"] .mvv-number{color:rgba(13,79,46,.15)}
+[data-theme="light"] #osmose{background:var(--bg)}
+[data-theme="light"] #osmose::before{background:linear-gradient(to bottom,var(--bg2),transparent)}
+[data-theme="light"] #osmose::after{background:linear-gradient(to top,var(--bg),transparent)}
+[data-theme="light"] .osmose-text-col{background:rgba(255,255,255,.6);backdrop-filter:blur(4px)}
+[data-theme="light"] #regen-cta{background:var(--bg2)}
+[data-theme="light"] .regen-img-col img{opacity:.85}
+[data-theme="light"] .founder-card{background:#fff;border-color:rgba(13,79,46,.18);box-shadow:0 4px 20px rgba(13,79,46,.1)}
+[data-theme="light"] .contact-form,
+[data-theme="light"] .contact-info-items .ci{background:#fff}
+[data-theme="light"] footer{background:var(--bg2);border-top:1px solid rgba(13,79,46,.18)}
+[data-theme="light"] .footer-logo-name,[data-theme="light"] .footer-tagline{color:var(--text2)}
+[data-theme="light"] .btn-primary{
+  background:linear-gradient(135deg,var(--green-2),var(--green-3));
+  color:#fff;
+}
+[data-theme="light"] .btn-outline{
+  border-color:var(--green-2);color:var(--green-2);
+}
+[data-theme="light"] .btn-outline:hover{background:var(--green-2);color:#fff}
+[data-theme="light"] #intro::before{background:linear-gradient(to bottom,var(--bg),var(--bg2))}
+[data-theme="light"] #sobre::before{background:linear-gradient(to bottom,var(--bg2),var(--bg))}
+  </style>
+</head>
+<body>
+
+<!-- Cursor -->
+<div id="cursor-dot"></div>
+
+<!-- Sound toggle -->
+<button id="sound-btn" onclick="toggleSound()" title="Som do mar" aria-label="Alternar som do mar">
+  <svg id="sound-icon-on" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+  <svg id="sound-icon-off" style="display:none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+</button>
+
+<!-- ═══ NAVBAR ═══ -->
+<nav id="navbar" role="navigation" aria-label="Navegação principal">
+  <div class="nav-inner">
+    <!-- Logo -->
+    <a href="#" class="nav-logo" aria-label="Verdemar Tech — Início">
+      <img src="assets/vt_logo_main.png" alt="Verdemar Tech" />
+      <span class="nav-brand" data-i18n="brand">Verdemar Tech</span>
+    </a>
+    <!-- Desktop links -->
+    <ul class="nav-links">
+      <li><a href="#sobre" data-i18n="nav_about">Quem Somos</a></li>
+      <li><a href="#projetos" data-i18n="nav_projects">Projetos</a></li>
+      <li><a href="#mvv" data-i18n="nav_mvv">Missão &amp; Valores</a></li>
+      <li><a href="#fundador" data-i18n="nav_founder">Fundador</a></li>
+      <li><a href="#contato" data-i18n="nav_contact">Contato</a></li>
+    </ul>
+    <!-- Controls -->
+    <div class="nav-right">
+      <!-- Language flags — real images -->
+      <div class="nav-flags" title="Idioma">
+        <button class="flag-btn active" data-lang="pt" title="Português" onclick="setLang('pt')">
+          <img src="flags/br.png" alt="Brasil" loading="lazy" />
+        </button>
+        <button class="flag-btn" data-lang="en" title="English" onclick="setLang('en')">
+          <img src="flags/gb.png" alt="United Kingdom" loading="lazy" />
+        </button>
+        <button class="flag-btn" data-lang="es" title="Español" onclick="setLang('es')">
+          <img src="flags/es.png" alt="España" loading="lazy" />
+        </button>
+        <button class="flag-btn" data-lang="fr" title="Français" onclick="setLang('fr')">
+          <img src="flags/fr.png" alt="France" loading="lazy" />
+        </button>
+      </div>
+      <!-- Theme -->
+      <button class="theme-btn" id="themeBtn" onclick="toggleTheme()" aria-label="Alternar tema">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      </button>
+      <!-- CTA -->
+      <a href="#contato" class="btn-nav-cta" data-i18n="nav_cta">Solicitar Demo</a>
+      <!-- Hamburger -->
+      <button class="hamburger" id="hamburger" onclick="toggleDrawer()" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══ MOBILE DRAWER ═══ -->
+<div id="drawer-overlay" onclick="toggleDrawer()"></div>
+<div id="mobile-drawer" role="dialog" aria-label="Menu mobile">
+  <div class="drawer-head">
+    <div class="drawer-logo-row">
+      <img src="assets/vt_logo_main.png" alt="Logo" />
+      <span>Verdemar Tech</span>
+    </div>
+    <button class="drawer-close" onclick="toggleDrawer()" aria-label="Fechar menu">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <nav class="drawer-nav">
+    <a href="#sobre" onclick="toggleDrawer()" data-i18n="nav_about">Quem Somos</a>
+    <a href="#projetos" onclick="toggleDrawer()" data-i18n="nav_projects">Projetos</a>
+    <a href="#mvv" onclick="toggleDrawer()" data-i18n="nav_mvv">Missão &amp; Valores</a>
+    <a href="#fundador" onclick="toggleDrawer()" data-i18n="nav_founder">Fundador</a>
+    <a href="#contato" onclick="toggleDrawer()" data-i18n="nav_contact">Contato</a>
+  </nav>
+  <div class="drawer-foot">
+    <div class="drawer-foot-row">
+      <span data-i18n="drawer_theme">Tema:</span>
+      <button class="theme-btn" onclick="toggleTheme()" aria-label="Alternar tema">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      </button>
+    </div>
+    <div class="drawer-foot-row">
+      <span data-i18n="drawer_lang">Idioma:</span>
+      <div class="drawer-flags">
+        <div class="d-flag active" data-lang="pt" onclick="setLang('pt');toggleDrawer()" title="Português">
+          <img src="flags/br.png" alt="Brasil" loading="lazy" />
+        </div>
+        <div class="d-flag" data-lang="en" onclick="setLang('en');toggleDrawer()" title="English">
+          <img src="flags/gb.png" alt="United Kingdom" loading="lazy" />
+        </div>
+        <div class="d-flag" data-lang="es" onclick="setLang('es');toggleDrawer()" title="Español">
+          <img src="flags/es.png" alt="España" loading="lazy" />
+        </div>
+        <div class="d-flag" data-lang="fr" onclick="setLang('fr');toggleDrawer()" title="Français">
+          <img src="flags/fr.png" alt="France" loading="lazy" />
+        </div>
+      </div>
+    </div>
+    <a href="#contato" class="drawer-cta" onclick="toggleDrawer()" data-i18n="nav_cta">Solicitar Demo</a>
+  </div>
+</div>
+
+<!-- ═══ HERO — Fullscreen Video ═══ -->
+<section id="hero" aria-label="Hero">
+  <video class="hero-video" autoplay muted loop playsinline
+    poster="assets/img_futuro_sem_desperdicio.jpg">
+    <source src="https://3000-iyitl0r1r7canjbtcs7y0-cc2fbc16.sandbox.novita.ai/assets/verdemar_hero.mp4" type="video/mp4" />
+    <!-- fallback image if video fails -->
+  </video>
+  <div class="hero-overlay"></div>
+  <!-- Centered logo + tagline -->
+  <div class="hero-center">
+    <img src="assets/vt_logo_main.png" alt="Verdemar Tech" class="hero-logo" />
+    <div class="hero-brand"><span class="g">Verdemar</span> Tech</div>
+    <div class="hero-pill" data-i18n="hero_pill">Inovação · Tecnologia · Sustentabilidade</div>
+  </div>
+  <!-- Scroll hint -->
+  <div class="hero-scroll" aria-hidden="true">
+    <span data-i18n="hero_scroll">Rolar</span>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+  </div>
+</section>
+
+<!-- ═══ INTRO — Stats + CTA ═══ -->
+<section id="intro" aria-label="Introdução">
+  <div class="intro-inner">
+    <div class="reveal">
+      <div class="badge">
+        <span class="badge-dot"></span>
+        <span data-i18n="intro_eyebrow">Ecossistema de Inovação Sustentável</span>
+      </div>
+      <h2 class="intro-title" data-i18n="intro_title">
+        Tecnologia que <span class="accent">transforma</span> o mundo
+      </h2>
+      <p class="intro-sub" data-i18n="intro_sub">
+        Onde sustentabilidade e inovação se tornam negócios reais. Desenvolvemos soluções para água, energia, construção e conectividade — com impacto ambiental positivo.
+      </p>
+      <div class="btns">
+        <a href="#projetos" class="btn-primary" data-i18n="intro_cta1">Ver Projetos</a>
+        <a href="#contato" class="btn-outline" data-i18n="intro_cta2">Falar Conosco</a>
+      </div>
+    </div>
+    <div class="stats-grid reveal">
+      <div class="stat-card">
+        <strong>7</strong>
+        <span data-i18n="stat_patents">Patentes Depositadas</span>
+      </div>
+      <div class="stat-card">
+        <strong>+10</strong>
+        <span data-i18n="stat_pipeline">Projetos no Pipeline</span>
+      </div>
+      <div class="stat-card">
+        <strong>4</strong>
+        <span data-i18n="stat_langs">Idiomas no Site</span>
+      </div>
+      <div class="stat-card">
+        <strong>SP</strong>
+        <span>São Paulo, Brasil</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ REGENERE SEUS RESÍDUOS — Split: texto esquerda, imagem direita ═══ -->
+<section id="regen-cta" aria-label="Nossa Proposta">
+  <div class="regen-split">
+    <!-- Texto (esquerda) -->
+    <div class="regen-text-col reveal">
+      <p class="regen-eyebrow" data-i18n="regen_eyebrow">Nossa Proposta</p>
+      <h2 class="regen-title" data-i18n="regen_title">Regenere<br/>seus resíduos</h2>
+      <p class="regen-text" data-i18n="regen_text">
+        Nossas tecnologias processam descartes complexos e restauram o fluxo natural — transformando o que sobra em valor real para o planeta e para os negócios.
+      </p>
+      <a href="#projetos" class="btn-primary" data-i18n="regen_cta">Ver tecnologias</a>
+    </div>
+    <!-- Imagem (direita) -->
+    <div class="regen-img-col">
+      <img src="assets/img_regeneracao.jpg" alt="Cristal verde - tecnologia de regeneração" loading="lazy" />
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SOBRE ═══ -->
+<section class="section" id="sobre" aria-label="Quem Somos">
+  <div class="container">
+    <div class="about-grid">
+      <div class="reveal">
+        <p class="sec-eyebrow" data-i18n="about_eyebrow">Quem Somos</p>
+        <h2 class="sec-title" data-i18n="about_title">
+          Tecnologia e sustentabilidade<br/>se tornam <span class="accent">negócios</span>
+        </h2>
+        <p class="about-lead" data-i18n="about_lead">
+          A Verdemar Tech é um ecossistema de inovação fundado em São Paulo, Brasil. Desenvolvemos projetos que conectam tecnologia, sustentabilidade e impacto social — do tratamento de água à construção civil sustentável.
+        </p>
+        <a href="#projetos" class="btn-outline" data-i18n="about_cta">Nossos Projetos</a>
+      </div>
+      <div class="pillars-grid reveal">
+        <div class="pillar">
+          <div class="pillar-line"></div>
+          <h3 data-i18n="pillar_water">Recursos Hídricos</h3>
+          <p data-i18n="pillar_water_desc">Tecnologias para tratamento e saneamento de água</p>
+        </div>
+        <div class="pillar">
+          <div class="pillar-line"></div>
+          <h3 data-i18n="pillar_energy">Energia Limpa</h3>
+          <p data-i18n="pillar_energy_desc">Geração renovável e captura de CO₂</p>
+        </div>
+        <div class="pillar">
+          <div class="pillar-line"></div>
+          <h3 data-i18n="pillar_construction">Construção Verde</h3>
+          <p data-i18n="pillar_construction_desc">Materiais sustentáveis com sal residual das Usinas Verdemar</p>
+        </div>
+        <div class="pillar">
+          <div class="pillar-line"></div>
+          <h3 data-i18n="pillar_fintech">Fintech Verde</h3>
+          <p data-i18n="pillar_fintech_desc">Soluções financeiras com propósito ambiental</p>
+        </div>
+        <div class="pillar systems-pillar" style="grid-column:1/-1">
+          <div class="pillar-line"></div>
+          <h3 data-i18n="pillar_systems">Sistemas &amp; Softwares</h3>
+          <p data-i18n="pillar_systems_desc">Plataformas digitais com IA para saúde humana e veterinária</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PROJETOS ═══ -->
+<section class="section" id="projetos" aria-label="Projetos">
+  <div class="container">
+    <div class="sec-header reveal">
+      <p class="sec-eyebrow" data-i18n="proj_eyebrow">Do Mar à Solução</p>
+      <h2 class="sec-title" data-i18n="proj_title">Projetos sustentáveis<br/>com <span class="accent">impacto real</span></h2>
+    </div>
+
+    <!-- Filter tabs -->
+    <div class="filter-tabs" role="tablist">
+      <button class="filter-tab active" data-filter="all" onclick="filterProjects('all',this)" role="tab" data-i18n="filter_all">Todos</button>
+      <button class="filter-tab" data-filter="agua" onclick="filterProjects('agua',this)" role="tab" data-i18n="filter_water">Água</button>
+      <button class="filter-tab" data-filter="energia" onclick="filterProjects('energia',this)" role="tab" data-i18n="filter_energy">Energia</button>
+      <button class="filter-tab" data-filter="construcao" onclick="filterProjects('construcao',this)" role="tab" data-i18n="filter_construction">Construção</button>
+      <button class="filter-tab" data-filter="conectividade" onclick="filterProjects('conectividade',this)" role="tab" data-i18n="filter_tech">Conectividade</button>
+      <button class="filter-tab" data-filter="software" onclick="filterProjects('software',this)" role="tab" data-i18n="filter_software">Softwares</button>
+    </div>
+
+    <div class="projects-grid" id="projectsGrid">
+
+      <!-- ÁGUA -->
+      <article class="project-card" data-category="agua">
+        <div class="card-top">
+          <div class="card-tags">
+            <span class="tag">Saneamento</span><span class="tag">Social</span><span class="tag tag-accent">Patente</span>
+          </div>
+          <h3>Wetlands Verdemar</h3>
+        </div>
+        <p data-i18n="proj_wetlands_desc">Saneamento por zona de raízes para comunidades. Até 200.000 L/dia.</p>
+      </article>
+
+      <article class="project-card" data-category="agua">
+        <div class="card-top">
+          <div class="card-tags">
+            <span class="tag">Água</span><span class="tag">Osmose</span><span class="tag tag-accent">Patente</span>
+          </div>
+          <h3 data-i18n="proj_usina_name">Usina de Condensação Térmica</h3>
+        </div>
+        <p data-i18n="proj_usina_desc">Reaproveitamento do resíduo (salmoura) das usinas de osmose reversa. Condensação térmica para geração de sal residual destinado à Saltria.</p>
+      </article>
+
+      <!-- ENERGIA -->
+      <article class="project-card" data-category="energia">
+        <div class="card-top">
+          <div class="card-tags">
+            <span class="tag">Híbrido</span><span class="tag">Hídrico</span><span class="tag tag-accent">Eólico</span><span class="tag">Solar</span>
+          </div>
+          <h3>Gerador PHP</h3>
+        </div>
+        <p data-i18n="proj_php_desc">Gerador híbrido de energia que combina geração hídrica, eólica e painéis solares fixos e portáteis — clean energy em qualquer ambiente.</p>
+      </article>
+
+      <!-- CONSTRUÇÃO -->
+      <article class="project-card" data-category="construcao">
+        <div class="card-top">
+          <div class="card-tags">
+            <span class="tag">Construção</span><span class="tag tag-accent">Patente</span><span class="tag">Circular</span>
+          </div>
+          <h3>Saltria</h3>
+        </div>
+        <p data-i18n="proj_saltria_desc">Produtos da alvenaria fabricados com sal residual das Usinas Verdemar. A condensação térmica gera o sal que abastece esta linha de produtos.</p>
+      </article>
+
+      <article class="project-card" data-category="construcao">
+        <div class="card-top">
+          <div class="card-tags">
+            <span class="tag">Turismo</span><span class="tag">Eco</span><span class="tag">Resorts</span>
+          </div>
+          <h3>Sal Oceano Resorts</h3>
+        </div>
+        <p data-i18n="proj_resorts_desc">Rede de resorts sustentáveis construídos com produtos Saltria. Turismo de impacto zero.</p>
+      </article>
+
+      <!-- CONECTIVIDADE & INOVAÇÃO -->
+      <article class="project-card" data-category="conectividade">
+        <div class="card-top">
+          <div class="card-tags">
+            <span class="tag">Wi-Fi</span><span class="tag">Conectividade</span><span class="tag">Rede</span>
+          </div>
+          <h3>MIRA</h3>
+        </div>
+        <p data-i18n="proj_mira_desc">Agregador de redes Wi-Fi: combina de 3 a 6 sinais fracos de Wi-Fi e gera uma nova rede cabeada ou Wi-Fi mais estável e robusta.</p>
+      </article>
+
+      <article class="project-card" data-category="conectividade">
+        <div class="card-top">
+          <div class="card-tags">
+            <span class="tag">Lab</span><span class="tag">Portátil</span><span class="tag">Ambiental</span>
+          </div>
+          <h3>Cubo Gaia</h3>
+        </div>
+        <p data-i18n="proj_cubo_desc">Laboratório portátil em cubo. 4–8 leituras ambientais simultâneas: água, solo, ar e mais.</p>
+      </article>
+
+      <article class="project-card" data-category="conectividade">
+        <div class="card-top">
+          <div class="card-tags">
+            <span class="tag">Fintech</span><span class="tag">ESG</span><span class="tag">Verde</span>
+          </div>
+          <h3>Verdemar Card</h3>
+        </div>
+        <p data-i18n="proj_card_desc">Cartão fintech verde com benefícios e recompensas por ações sustentáveis.</p>
+      </article>
+
+      <!-- SOFTWARES -->
+      <article class="project-card" data-category="software">
+        <div class="card-top">
+          <div class="card-tags">
+            <span class="tag">IA</span><span class="tag">PACS</span><span class="tag">Medicina Nuclear</span>
+          </div>
+          <h3>Pierre Med</h3>
+        </div>
+        <p data-i18n="proj_pierre_desc">Plataforma de diagnóstico por imagem com IA. Gera pré-laudos em 90–120 segundos, cálculo automático de SUV, fusão PET/CT e gestão de radiofármacos.</p>
+        <div style="padding:0 22px 20px">
+          <a href="https://pierremed.com.br" target="_blank" rel="noopener" class="btn-card-link" data-i18n="btn_know_more">Saiba mais</a>
+        </div>
+      </article>
+
+      <article class="project-card" data-category="software">
+        <div class="card-top">
+          <div class="card-tags">
+            <span class="tag">IA</span><span class="tag">Veterinária</span><span class="tag">Diagnóstico</span>
+          </div>
+          <h3>Marie Vet</h3>
+        </div>
+        <p data-i18n="proj_marie_desc">Vertical do Pierre Med para medicina veterinária. Plataforma de diagnóstico por imagem com IA para clínicas e hospitais veterinários.</p>
+        <div style="padding:0 22px 20px">
+          <a href="https://marievet.com.br" target="_blank" rel="noopener" class="btn-card-link" data-i18n="btn_know_more">Saiba mais</a>
+        </div>
+      </article>
+
+      <article class="project-card" data-category="software">
+        <div class="card-top">
+          <div class="card-tags">
+            <span class="tag">Mobile</span><span class="tag">Gestão</span><span class="tag">SaaS</span>
+          </div>
+          <h3>Comanda Fone</h3>
+        </div>
+        <p data-i18n="proj_comanda_desc">Solução mobile para gestão de pedidos e comandas integrada ao ecossistema.</p>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══ OSMOSE — Split: imagem praia esquerda, texto direita ═══ -->
+<section id="osmose" aria-label="Usina de Condensação Térmica">
+  <div class="osmose-split">
+    <!-- Imagem praia (esquerda) -->
+    <div class="osmose-img-col">
+      <img src="assets/img_praia_usina.jpg" alt="Praia com água cristalina — água devolvida ao fluxo natural" loading="lazy" />
+    </div>
+    <!-- Texto (direita) -->
+    <div class="osmose-text-col reveal">
+      <p class="sec-eyebrow" data-i18n="osmose_eyebrow">Usina de Condensação Térmica</p>
+      <h2 class="osmose-title" data-i18n="osmose_title">Dos resíduos<br/>à restauração</h2>
+      <p class="osmose-text" data-i18n="osmose_text">
+        Reaproveitando o resíduo das usinas de osmose reversa (salmoura), nossa tecnologia de condensação térmica fecha o ciclo hídrico — transformando descarte industrial em recurso renovável. O sal gerado abastece a Saltria para criação de produtos de alvenaria, devolvendo o equilíbrio biológico às nossas águas. (Projeto experimental em desenvolvimento)
+      </p>
+      <div class="osmose-stats">
+        <div class="osmose-stat"><strong>100%</strong><span data-i18n="osmose_stat1">Reaproveitamento de salmoura</span></div>
+        <div class="osmose-stat"><strong>Zero</strong><span data-i18n="osmose_stat2">Desperdício hídrico</span></div>
+        <div class="osmose-stat"><strong>Saltria</strong><span data-i18n="osmose_stat3">Destino do sal gerado</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ MVV ═══ -->
+<section class="section" id="mvv" aria-label="Missão, Visão e Valores">
+  <div class="container">
+    <div class="sec-header reveal">
+      <p class="sec-eyebrow" data-i18n="mvv_eyebrow">Propósito</p>
+      <h2 class="sec-title" data-i18n="mvv_title">Missão, Visão &amp; Valores</h2>
+    </div>
+    <div class="mvv-grid">
+      <div class="mvv-card reveal">
+        <div class="mvv-number">01</div>
+        <h3 data-i18n="mvv_mission_h">Missão</h3>
+        <p data-i18n="mvv_mission_txt">Desenvolver tecnologias sustentáveis que transformem recursos naturais em soluções acessíveis, rentáveis e de alto impacto para pessoas, empresas e o planeta.</p>
+      </div>
+      <div class="mvv-card reveal" style="transition-delay:.1s">
+        <div class="mvv-number">02</div>
+        <h3 data-i18n="mvv_vision_h">Visão</h3>
+        <p data-i18n="mvv_vision_txt">Até 2040, ser reconhecida como uma das empresas brasileiras referência em ecossistema de inovação verde — onde ciência, empreendedorismo e propósito convergem para regenerar o planeta.</p>
+      </div>
+      <div class="mvv-card reveal" style="transition-delay:.2s">
+        <div class="mvv-number">03</div>
+        <h3 data-i18n="mvv_values_h">Valores</h3>
+        <ul class="mvv-list">
+          <li data-i18n="val1">Inovação com propósito</li>
+          <li data-i18n="val2">Transparência radical</li>
+          <li data-i18n="val3">Impacto mensurável</li>
+          <li data-i18n="val4">Colaboração sistêmica</li>
+          <li data-i18n="val5">Respeito à natureza</li>
+          <li data-i18n="val6">Alta competência técnica</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FUNDADOR ═══ -->
+<section class="section" id="fundador" aria-label="Fundador">
+  <div class="container">
+    <div class="sec-header reveal">
+      <p class="sec-eyebrow" data-i18n="founder_eyebrow">Liderança</p>
+      <h2 class="sec-title" data-i18n="founder_title">Fundador</h2>
+    </div>
+    <div class="founder-wrap">
+      <div class="founder-card reveal">
+        <div class="founder-photo">
+          <img src="assets/vitor_reis_foto.jpg" alt="Vitor Reis — Fundador Verdemar Tech" />
+        </div>
+        <div>
+          <h2 class="founder-name">Vitor Reis</h2>
+          <p class="founder-role" data-i18n="founder_role">Fundador &middot; Verdemar Tech</p>
+          <p class="founder-bio" data-i18n="founder_bio">
+            Empreendedor com foco em projetos que reaproveitam e reduzem resíduos, transformando o que seria descartado em soluções sustentáveis de alto impacto. Lidera o ecossistema Verdemar Tech, desenvolvendo soluções inovadoras nas áreas de água, energia, construção e tecnologia aplicada.
+          </p>
+          <div class="founder-links">
+            <a href="https://www.linkedin.com/in/vitorpmreis/" target="_blank" rel="noopener" class="f-link li" aria-label="LinkedIn de Vitor Reis">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+              LinkedIn
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CONTATO ═══ -->
+<section class="section" id="contato" aria-label="Contato">
+  <div class="container">
+    <div class="sec-header reveal">
+      <p class="sec-eyebrow" data-i18n="contact_eyebrow">Fale Conosco</p>
+      <h2 class="sec-title" data-i18n="contact_title">Entre em contato</h2>
+      <p class="sec-sub" data-i18n="contact_sub">Estamos prontos para apresentar nossas soluções e discutir parcerias.</p>
+    </div>
+    <div class="contact-grid">
+      <!-- Info -->
+      <div class="reveal">
+        <div class="contact-info-items">
+          <div class="ci">
+            <div class="ci-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            </div>
+            <div>
+              <p class="ci-label" data-i18n="ci_email">E-mail</p>
+              <a href="mailto:contato@verdemartech.com.br" class="ci-value">contato@verdemartech.com.br</a>
+            </div>
+          </div>
+          <div class="ci">
+            <div class="ci-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            </div>
+            <div>
+              <p class="ci-label" data-i18n="ci_location">Localização</p>
+              <span class="ci-value">São Paulo, Brasil</span>
+            </div>
+          </div>
+        </div>
+        <div class="ci-social">
+          <a href="https://wa.me/5511932642307" target="_blank" rel="noopener" class="soc-link wa" aria-label="WhatsApp">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            WhatsApp
+          </a>
+          <a href="https://www.linkedin.com/company/verdemar-tech/?viewAsMember=true" target="_blank" rel="noopener" class="soc-link li" aria-label="LinkedIn Verdemar Tech">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+            LinkedIn
+          </a>
+        </div>
+      </div>
+      <!-- Form -->
+      <form class="contact-form reveal" id="contactForm" action="https://formspree.io/f/xkopabzw" method="POST" enctype="multipart/form-data">
+        <div class="form-row">
+          <div class="form-field">
+            <label for="f-name" data-i18n="form_name">Nome</label>
+            <input type="text" id="f-name" name="name" placeholder="Seu nome completo" required autocomplete="name" />
+          </div>
+          <div class="form-field">
+            <label for="f-email" data-i18n="form_email">E-mail</label>
+            <input type="email" id="f-email" name="email" placeholder="seu@email.com" required autocomplete="email" />
+          </div>
+        </div>
+        <div class="form-field">
+          <label for="f-phone" data-i18n="form_phone">Telefone</label>
+          <input type="tel" id="f-phone" name="phone" placeholder="(11) 9 0000-0000" autocomplete="tel" />
+        </div>
+        <div class="form-field">
+          <label for="f-subject" data-i18n="form_subject">Assunto</label>
+          <select id="f-subject" name="subject" required>
+            <option value="" data-i18n="form_subject_placeholder">Selecione um assunto…</option>
+            <option value="parceria" data-i18n="form_subject_partner">Parceria / Investimento</option>
+            <option value="demo" data-i18n="form_subject_demo">Solicitar Demo</option>
+            <option value="fornecedor" data-i18n="form_subject_supplier">Fornecedor</option>
+            <option value="candidato" data-i18n="form_subject_candidate">Candidatura</option>
+            <option value="imprensa" data-i18n="form_subject_press">Imprensa / Mídia</option>
+            <option value="outro" data-i18n="form_subject_other">Outro</option>
+          </select>
+        </div>
+        <!-- Attachment — visible when Fornecedor or Candidato -->
+        <div class="form-field" id="attachField" style="display:none">
+          <label data-i18n="form_attach">Anexo</label>
+          <label class="attach-label" for="attachFile">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+            <span id="attachName" data-i18n="form_attach_placeholder">Clique para anexar (PDF, DOC, PPT)</span>
+          </label>
+          <input type="file" id="attachFile" name="attachment" accept=".pdf,.doc,.docx,.ppt,.pptx" />
+        </div>
+        <div class="form-field">
+          <label for="f-message" data-i18n="form_message">Mensagem</label>
+          <textarea id="f-message" name="message" rows="5"
+            placeholder="Descreva seu interesse ou projeto…"
+            maxlength="3000" required
+            oninput="updateCharCount(this)"></textarea>
+          <p class="char-counter"><span id="charCount">0</span>/3000</p>
+        </div>
+        <div class="form-note" id="formNote" data-i18n="form_note">
+          Inclua seu currículo ou apresentação da empresa no campo de anexo acima.
+        </div>
+        <button type="submit" class="btn-submit" data-i18n="form_submit">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          Enviar Mensagem
+        </button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer role="contentinfo">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div>
+        <div class="footer-logo">
+          <img src="assets/vt_logo_main.png" alt="Verdemar Tech" />
+          <span class="footer-logo-name">Verdemar Tech</span>
+        </div>
+        <p class="footer-tagline" data-i18n="footer_tagline">Ecossistema de inovação sustentável. Do Mar à Solução — projetos com impacto real no planeta e nas pessoas.</p>
+        <div class="footer-social-row">
+          <a href="https://www.linkedin.com/company/verdemar-tech/?viewAsMember=true" target="_blank" rel="noopener" class="footer-soc li" aria-label="LinkedIn Verdemar Tech">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+          </a>
+          <a href="https://wa.me/5511932642307" target="_blank" rel="noopener" class="footer-soc wa" aria-label="WhatsApp">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          </a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4 data-i18n="footer_nav">Empresa</h4>
+        <ul>
+          <li><a href="#sobre" data-i18n="nav_about">Quem Somos</a></li>
+          <li><a href="#mvv" data-i18n="nav_mvv">Missão &amp; Valores</a></li>
+          <li><a href="#fundador" data-i18n="nav_founder">Fundador</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4 data-i18n="footer_proj">Projetos</h4>
+        <ul>
+          <li><a href="#projetos">Saltria</a></li>
+          <li><a href="#projetos">Gerador PHP</a></li>
+          <li><a href="#projetos">Wetlands</a></li>
+          <li><a href="#projetos">Pierre Med</a></li>
+          <li><a href="#projetos">Cubo Gaia &middot; MIRA</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4 data-i18n="footer_contact">Contato</h4>
+        <ul>
+          <li><a href="tel:+5511932642307">(11) 9 3264-2307</a></li>
+          <li><a href="mailto:contato@verdemartech.com.br">contato@verdemartech.com.br</a></li>
+          <li><a href="#contato" data-i18n="nav_cta">Solicitar Demo</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 Verdemar Tech — São Paulo, SP. <span data-i18n="footer_rights">Todos os direitos reservados.</span></p>
+      <button class="sources-btn" id="sourcesBtn" data-i18n="footer_sources">Fontes de Pesquisa</button>
+    </div>
+  </div>
+</footer>
+
+<!-- Scroll to top -->
+<button id="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Voltar ao topo">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+</button>
+
+<!-- ═══ MODAL — Fontes de Pesquisa ═══ -->
+<div class="modal-overlay" id="sourcesModal" role="dialog" aria-modal="true" aria-labelledby="sourcesTitle">
+  <div class="modal">
+    <button class="modal-close" id="sourcesClose" aria-label="Fechar">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <h2 id="sourcesTitle" data-i18n="sources_title">Fontes de Pesquisa</h2>
+    <p class="modal-intro" data-i18n="sources_intro">Referências científicas e técnicas que embasam as soluções apresentadas neste site:</p>
+    <ul class="sources-list">
+      <li>
+        <strong>Osmose Reversa &amp; Gestão de Salmoura</strong>
+        <a href="https://www.sciencedirect.com/science/article/pii/S0011916421003933" target="_blank" rel="noopener">
+          Desalination — Brine management strategies for inland desalination (ScienceDirect, 2021)
+        </a>
+      </li>
+      <li>
+        <strong>Wetlands Construídas para Saneamento</strong>
+        <a href="https://www.epa.gov/wetlands/constructed-wetlands-treating-municipal-wastewater" target="_blank" rel="noopener">
+          EPA — Constructed Wetlands for Treating Municipal Wastewater (US EPA)
+        </a>
+      </li>
+      <li>
+        <strong>Captura e Armazenamento de CO₂</strong>
+        <a href="https://www.iea.org/topics/carbon-capture-utilisation-and-storage" target="_blank" rel="noopener">
+          IEA — Carbon Capture, Utilisation and Storage (International Energy Agency)
+        </a>
+      </li>
+      <li>
+        <strong>Construção Sustentável com Materiais Alternativos</strong>
+        <a href="https://www.sciencedirect.com/science/article/pii/S0950061820317748" target="_blank" rel="noopener">
+          Construction and Building Materials — Salt-based sustainable construction (ScienceDirect, 2020)
+        </a>
+      </li>
+      <li>
+        <strong>Energia Hidrostática e Geração Renovável</strong>
+        <a href="https://www.irena.org/ocean" target="_blank" rel="noopener">
+          IRENA — Ocean Energy (International Renewable Energy Agency)
+        </a>
+      </li>
+      <li>
+        <strong>Patentes INPI Brasil</strong>
+        <a href="https://www.gov.br/inpi/pt-br" target="_blank" rel="noopener">
+          INPI — Instituto Nacional da Propriedade Industrial (gov.br)
+        </a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     SCRIPTS
+══════════════════════════════════════════════════════ -->
+<script>
+/* ─── CURSOR ─── */
+const cursorEl = document.getElementById('cursor-dot');
+document.addEventListener('mousemove', e => {
+  cursorEl.style.left = e.clientX + 'px';
+  cursorEl.style.top  = e.clientY + 'px';
+}, { passive:true });
+document.querySelectorAll('a,button,.project-card,.flag-btn').forEach(el => {
+  el.addEventListener('mouseenter', () => document.body.classList.add('c-hover'));
+  el.addEventListener('mouseleave', () => document.body.classList.remove('c-hover'));
+});
+
+/* ─── OCEAN SOUND (Web Audio API) ─── */
+let audioCtx=null, noiseSource=null, gainNode=null, soundOn=false;
+
+function createOceanSound() {
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  const bufferSize = audioCtx.sampleRate * 4;
+  const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+  const data = buffer.getChannelData(0);
+  for (let i=0;i<bufferSize;i++) data[i] = Math.random()*2-1;
+  noiseSource = audioCtx.createBufferSource();
+  noiseSource.buffer = buffer;
+  noiseSource.loop = true;
+  const filter = audioCtx.createBiquadFilter();
+  filter.type = 'lowpass';
+  filter.frequency.value = 420;
+  filter.Q.value = 0.8;
+  const filter2 = audioCtx.createBiquadFilter();
+  filter2.type = 'bandpass';
+  filter2.frequency.value = 180;
+  filter2.Q.value = 0.5;
+  gainNode = audioCtx.createGain();
+  gainNode.gain.value = 0;
+  noiseSource.connect(filter);
+  filter.connect(filter2);
+  filter2.connect(gainNode);
+  gainNode.connect(audioCtx.destination);
+  noiseSource.start();
+}
+
+function toggleSound() {
+  if (!audioCtx) createOceanSound();
+  soundOn = !soundOn;
+  const btn = document.getElementById('sound-btn');
+  const on  = document.getElementById('sound-icon-on');
+  const off = document.getElementById('sound-icon-off');
+  if (soundOn) {
+    gainNode.gain.cancelScheduledValues(audioCtx.currentTime);
+    gainNode.gain.linearRampToValueAtTime(.18, audioCtx.currentTime+1.5);
+    on.style.display=''; off.style.display='none';
+    btn.classList.remove('muted');
+  } else {
+    gainNode.gain.cancelScheduledValues(audioCtx.currentTime);
+    gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime+1);
+    on.style.display='none'; off.style.display='';
+    btn.classList.add('muted');
+  }
+}
+
+window.addEventListener('scroll', () => {
+  if (!gainNode||!soundOn) return;
+  const heroH = document.getElementById('hero').offsetHeight;
+  const factor = Math.max(0, 1 - window.scrollY/(heroH*0.8));
+  gainNode.gain.cancelScheduledValues(audioCtx.currentTime);
+  gainNode.gain.linearRampToValueAtTime(factor*.18, audioCtx.currentTime+.4);
+}, { passive:true });
+
+/* ─── THEME ─── */
+function toggleTheme() {
+  const html = document.documentElement;
+  const next = html.getAttribute('data-theme')==='dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  localStorage.setItem('vm_theme', next);
+}
+
+/* ─── LANGUAGE ─── */
+const translations = {
+  pt: {
+    brand:'Verdemar Tech', nav_about:'Quem Somos', nav_projects:'Projetos',
+    nav_mvv:'Missão & Valores', nav_founder:'Fundador', nav_contact:'Contato',
+    nav_cta:'Solicitar Demo', drawer_theme:'Tema:', drawer_lang:'Idioma:',
+    hero_pill:'Inovação · Tecnologia · Sustentabilidade', hero_scroll:'Rolar',
+    intro_eyebrow:'Ecossistema de Inovação Sustentável',
+    intro_title:'Tecnologia que <span class="accent">transforma</span> o mundo',
+    intro_sub:'Onde sustentabilidade e inovação se tornam negócios reais. Desenvolvemos soluções para água, energia, construção e conectividade — com impacto ambiental positivo.',
+    intro_cta1:'Ver Projetos', intro_cta2:'Falar Conosco',
+    stat_patents:'Patentes Depositadas', stat_pipeline:'Projetos no Pipeline',
+    stat_langs:'Idiomas no Site',
+    regen_eyebrow:'Nossa Proposta', regen_title:'Regenere<br/>seus resíduos',
+    regen_text:'Nossas tecnologias processam descartes complexos e restauram o fluxo natural — transformando o que sobra em valor real para o planeta e para os negócios.',
+    regen_cta:'Ver tecnologias',
+    about_eyebrow:'Quem Somos', about_title:'Tecnologia e sustentabilidade<br/>se tornam <span class="accent">negócios</span>',
+    about_lead:'A Verdemar Tech é um ecossistema de inovação fundado em São Paulo, Brasil. Desenvolvemos projetos que conectam tecnologia, sustentabilidade e impacto social — do tratamento de água à construção civil sustentável.',
+    about_cta:'Nossos Projetos',
+    pillar_water:'Recursos Hídricos', pillar_water_desc:'Tecnologias para tratamento e saneamento de água',
+    pillar_energy:'Energia Limpa', pillar_energy_desc:'Geração renovável e captura de CO₂',
+    pillar_construction:'Construção Verde', pillar_construction_desc:'Materiais sustentáveis com sal residual das Usinas Verdemar',
+    pillar_fintech:'Fintech Verde', pillar_fintech_desc:'Soluções financeiras com propósito ambiental',
+    pillar_systems:'Sistemas & Softwares', pillar_systems_desc:'Plataformas digitais com IA para saúde humana e veterinária',
+    proj_eyebrow:'Do Mar à Solução', proj_title:'Projetos sustentáveis<br/>com <span class="accent">impacto real</span>',
+    filter_all:'Todos', filter_water:'Água', filter_energy:'Energia',
+    filter_construction:'Construção', filter_tech:'Conectividade', filter_software:'Softwares',
+    proj_wetlands_desc:'Saneamento por zona de raízes para comunidades. Até 200.000 L/dia.',
+    proj_usina_name:'Usina de Condensação Térmica',
+    proj_usina_desc:'Reaproveitamento do resíduo (salmoura) das usinas de osmose reversa. Condensação térmica para geração de sal residual destinado à Saltria.',
+    proj_php_desc:'Gerador híbrido de energia que combina geração hídrica, eólica e painéis solares fixos e portáteis — clean energy em qualquer ambiente.',
+    proj_saltria_desc:'Produtos da alvenaria fabricados com sal residual das Usinas Verdemar. A condensação térmica gera o sal que abastece esta linha de produtos.',
+    proj_resorts_desc:'Rede de resorts sustentáveis construídos com produtos Saltria. Turismo de impacto zero.',
+    proj_mira_desc:'Agregador de redes Wi-Fi: combina de 3 a 6 sinais fracos de Wi-Fi e gera uma nova rede cabeada ou Wi-Fi mais estável e robusta.',
+    proj_cubo_desc:'Laboratório portátil em cubo. 4–8 leituras ambientais simultâneas: água, solo, ar e mais.',
+    proj_card_desc:'Cartão fintech verde com benefícios e recompensas por ações sustentáveis.',
+    proj_pierre_desc:'Plataforma de diagnóstico por imagem com IA. Gera pré-laudos em 90–120 segundos, cálculo automático de SUV, fusão PET/CT e gestão de radiofármacos.',
+    proj_marie_desc:'Vertical do Pierre Med para medicina veterinária. Plataforma de diagnóstico por imagem com IA para clínicas e hospitais veterinários.',
+    proj_comanda_desc:'Solução mobile para gestão de pedidos e comandas integrada ao ecossistema.',
+    osmose_eyebrow:'Usina de Condensação Térmica', osmose_title:'Dos resíduos<br/>à restauração',
+    osmose_text:'Reaproveitando o resíduo das usinas de osmose reversa (salmoura), nossa tecnologia de condensação térmica fecha o ciclo hídrico — transformando descarte industrial em recurso renovável. O sal gerado abastece a Saltria para criação de produtos de alvenaria, devolvendo o equilíbrio biológico às nossas águas. (Projeto experimental em desenvolvimento)',
+    osmose_stat1:'Reaproveitamento de salmoura', osmose_stat2:'Desperdício hídrico', osmose_stat3:'Destino do sal gerado',
+    mvv_eyebrow:'Propósito', mvv_title:'Missão, Visão & Valores',
+    mvv_mission_h:'Missão', mvv_mission_txt:'Desenvolver tecnologias sustentáveis que transformem recursos naturais em soluções acessíveis, rentáveis e de alto impacto para pessoas, empresas e o planeta.',
+    mvv_vision_h:'Visão', mvv_vision_txt:'Até 2040, ser reconhecida como uma das empresas brasileiras referência em ecossistema de inovação verde — onde ciência, empreendedorismo e propósito convergem para regenerar o planeta.',
+    mvv_values_h:'Valores', val1:'Inovação com propósito', val2:'Transparência radical',
+    val3:'Impacto mensurável', val4:'Colaboração sistêmica', val5:'Respeito à natureza', val6:'Alta competência técnica',
+    founder_eyebrow:'Liderança', founder_title:'Fundador', founder_role:'Fundador · Verdemar Tech',
+    founder_bio:'Empreendedor com foco em projetos que reaproveitam e reduzem resíduos, transformando o que seria descartado em soluções sustentáveis de alto impacto. Lidera o ecossistema Verdemar Tech, desenvolvendo soluções inovadoras nas áreas de água, energia, construção e tecnologia aplicada.',
+    contact_eyebrow:'Fale Conosco', contact_title:'Entre em contato',
+    contact_sub:'Estamos prontos para apresentar nossas soluções e discutir parcerias.',
+    ci_email:'E-mail', ci_location:'Localização',
+    form_name:'Nome', form_email:'E-mail', form_phone:'Telefone', form_subject:'Assunto',
+    form_subject_placeholder:'Selecione um assunto…', form_subject_partner:'Parceria / Investimento',
+    form_subject_demo:'Solicitar Demo', form_subject_supplier:'Fornecedor',
+    form_subject_candidate:'Candidatura', form_subject_press:'Imprensa / Mídia', form_subject_other:'Outro',
+    form_attach:'Anexo', form_attach_placeholder:'Clique para anexar (PDF, DOC, PPT)',
+    form_message:'Mensagem', form_note:'Inclua seu currículo ou apresentação da empresa no campo de anexo acima.',
+    form_submit:'Enviar Mensagem',
+    btn_know_more:'Saiba mais',
+    footer_tagline:'Ecossistema de inovação sustentável. Do Mar à Solução — projetos com impacto real no planeta e nas pessoas.',
+    footer_nav:'Empresa', footer_proj:'Projetos', footer_contact:'Contato',
+    footer_rights:'Todos os direitos reservados.', footer_patents:'7 patentes depositadas',
+    footer_sources:'Fontes de Pesquisa',
+    sources_title:'Fontes de Pesquisa',
+    sources_intro:'Referências científicas e técnicas que embasam as soluções apresentadas neste site:',
+  },
+  en: {
+    brand:'Verdemar Tech', nav_about:'About Us', nav_projects:'Projects',
+    nav_mvv:'Mission & Values', nav_founder:'Founder', nav_contact:'Contact',
+    nav_cta:'Request Demo', drawer_theme:'Theme:', drawer_lang:'Language:',
+    hero_pill:'Innovation · Technology · Sustainability', hero_scroll:'Scroll',
+    intro_eyebrow:'Sustainable Innovation Ecosystem',
+    intro_title:'Technology that <span class="accent">transforms</span> the world',
+    intro_sub:'Where sustainability and innovation become real business. We develop solutions for water, energy, construction and connectivity — with positive environmental impact.',
+    intro_cta1:'See Projects', intro_cta2:'Talk to Us',
+    stat_patents:'Patents Filed', stat_pipeline:'Projects in Pipeline',
+    stat_langs:'Site Languages',
+    regen_eyebrow:'Our Proposal', regen_title:'Regenerate<br/>your waste',
+    regen_text:'Our technologies process complex discards and restore natural flow — turning what is left over into real value for the planet and business.',
+    regen_cta:'See technologies',
+    about_eyebrow:'About Us', about_title:'Technology and sustainability<br/>become <span class="accent">business</span>',
+    about_lead:'Verdemar Tech is an innovation ecosystem founded in São Paulo, Brazil. We develop projects connecting technology, sustainability and social impact — from water treatment to sustainable construction.',
+    about_cta:'Our Projects',
+    pillar_water:'Water Resources', pillar_water_desc:'Technologies for water treatment and sanitation',
+    pillar_energy:'Clean Energy', pillar_energy_desc:'Renewable generation and CO₂ capture',
+    pillar_construction:'Green Construction', pillar_construction_desc:'Sustainable materials with residual salt from Verdemar plants',
+    pillar_fintech:'Green Fintech', pillar_fintech_desc:'Financial solutions with environmental purpose',
+    pillar_systems:'Systems & Software', pillar_systems_desc:'Digital AI platforms for human and veterinary health',
+    proj_eyebrow:'From the Sea to Solution', proj_title:'Sustainable projects<br/>with <span class="accent">real impact</span>',
+    filter_all:'All', filter_water:'Water', filter_energy:'Energy',
+    filter_construction:'Construction', filter_tech:'Connectivity', filter_software:'Software',
+    proj_wetlands_desc:'Root zone sanitation system for communities. Up to 200,000 L/day.',
+    proj_usina_name:'Thermal Condensation Plant',
+    proj_usina_desc:'Reusing the residue (brine) from reverse osmosis plants. Thermal condensation to generate residual salt destined for Saltria.',
+    proj_php_desc:'Hybrid energy generator combining water, wind and fixed/portable solar panels — clean energy in any environment.',
+    proj_saltria_desc:'Masonry products made with residual salt from Verdemar plants. Thermal condensation generates the salt that feeds this product line.',
+    proj_resorts_desc:'Network of sustainable resorts built with Saltria products. Zero-impact tourism.',
+    proj_mira_desc:'Wi-Fi aggregator: combines 3 to 6 weak Wi-Fi signals into a stronger wired or Wi-Fi network.',
+    proj_cubo_desc:'Portable cube laboratory. 4–8 simultaneous environmental readings: water, soil, air and more.',
+    proj_card_desc:'Green fintech card with benefits and rewards for sustainable actions.',
+    proj_pierre_desc:'AI-powered medical imaging platform. Generates preliminary reports in 90–120 seconds, automatic SUV calculation, PET/CT fusion and radiopharmaceutical management.',
+    proj_marie_desc:'Pierre Med vertical for veterinary medicine. AI imaging platform for veterinary clinics and hospitals.',
+    proj_comanda_desc:'Mobile solution for order and tab management integrated into the ecosystem.',
+    osmose_eyebrow:'Thermal Condensation Plant', osmose_title:'From waste<br/>to restoration',
+    osmose_text:'By reusing the residue from reverse osmosis plants (brine), our thermal condensation technology closes the water cycle — turning industrial waste into a renewable resource. The salt generated feeds Saltria for the creation of masonry products, restoring biological balance to our waters. (Experimental project in development)',
+    osmose_stat1:'Brine reuse', osmose_stat2:'Water waste', osmose_stat3:'Salt destination',
+    mvv_eyebrow:'Purpose', mvv_title:'Mission, Vision & Values',
+    mvv_mission_h:'Mission', mvv_mission_txt:'Develop sustainable technologies that transform natural resources into accessible, profitable and high-impact solutions for people, companies and the planet.',
+    mvv_vision_h:'Vision', mvv_vision_txt:'By 2040, be recognized as one of the leading Brazilian companies in the green innovation ecosystem — where science, entrepreneurship and purpose converge to regenerate the planet.',
+    mvv_values_h:'Values', val1:'Innovation with purpose', val2:'Radical transparency',
+    val3:'Measurable impact', val4:'Systemic collaboration', val5:'Respect for nature', val6:'High technical competence',
+    founder_eyebrow:'Leadership', founder_title:'Founder', founder_role:'Founder · Verdemar Tech',
+    founder_bio:'Entrepreneur focused on projects that reuse and reduce waste, transforming what would be discarded into high-impact sustainable solutions. Leads the Verdemar Tech ecosystem, developing innovative solutions in water, energy, construction and applied technology.',
+    contact_eyebrow:'Get in Touch', contact_title:'Contact us',
+    contact_sub:'We are ready to present our solutions and discuss partnerships.',
+    ci_email:'Email', ci_location:'Location',
+    form_name:'Name', form_email:'Email', form_phone:'Phone', form_subject:'Subject',
+    form_subject_placeholder:'Select a subject…', form_subject_partner:'Partnership / Investment',
+    form_subject_demo:'Request Demo', form_subject_supplier:'Supplier',
+    form_subject_candidate:'Job Application', form_subject_press:'Press / Media', form_subject_other:'Other',
+    form_attach:'Attachment', form_attach_placeholder:'Click to attach (PDF, DOC, PPT)',
+    form_message:'Message', form_note:'Include your resume or company presentation in the attachment field above.',
+    form_submit:'Send Message',
+    btn_know_more:'Learn more',
+    footer_tagline:'Sustainable innovation ecosystem. From the Sea to Solution — projects with real impact on the planet and people.',
+    footer_nav:'Company', footer_proj:'Projects', footer_contact:'Contact',
+    footer_rights:'All rights reserved.', footer_patents:'7 patents filed',
+    footer_sources:'Research Sources',
+    sources_title:'Research Sources',
+    sources_intro:'Scientific and technical references supporting the solutions presented on this site:',
+  },
+  es: {
+    brand:'Verdemar Tech', nav_about:'Quiénes Somos', nav_projects:'Proyectos',
+    nav_mvv:'Misión y Valores', nav_founder:'Fundador', nav_contact:'Contacto',
+    nav_cta:'Solicitar Demo', drawer_theme:'Tema:', drawer_lang:'Idioma:',
+    hero_pill:'Innovación · Tecnología · Sostenibilidad', hero_scroll:'Desplazar',
+    intro_eyebrow:'Ecosistema de Innovación Sostenible',
+    intro_title:'Tecnología que <span class="accent">transforma</span> el mundo',
+    intro_sub:'Donde la sostenibilidad y la innovación se convierten en negocios reales. Desarrollamos soluciones para agua, energía, construcción y conectividad.',
+    intro_cta1:'Ver Proyectos', intro_cta2:'Hablemos',
+    stat_patents:'Patentes Presentadas', stat_pipeline:'Proyectos en Pipeline',
+    stat_langs:'Idiomas del Sitio',
+    regen_eyebrow:'Nuestra Propuesta', regen_title:'Regenera<br/>tus residuos',
+    regen_text:'Nuestras tecnologías procesan descartes complejos y restauran el flujo natural — transformando lo que sobra en valor real para el planeta y los negocios.',
+    regen_cta:'Ver tecnologías',
+    about_eyebrow:'Quiénes Somos', about_title:'Tecnología y sostenibilidad<br/>se convierten en <span class="accent">negocios</span>',
+    about_lead:'Verdemar Tech es un ecosistema de innovación fundado en São Paulo, Brasil. Desarrollamos proyectos que conectan tecnología, sostenibilidad e impacto social.',
+    about_cta:'Nuestros Proyectos',
+    pillar_water:'Recursos Hídricos', pillar_water_desc:'Tecnologías para tratamiento y saneamiento de agua',
+    pillar_energy:'Energía Limpia', pillar_energy_desc:'Generación renovable y captura de CO₂',
+    pillar_construction:'Construcción Verde', pillar_construction_desc:'Materiales sostenibles con sal residual de las Plantas Verdemar',
+    pillar_fintech:'Fintech Verde', pillar_fintech_desc:'Soluciones financieras con propósito ambiental',
+    pillar_systems:'Sistemas y Software', pillar_systems_desc:'Plataformas digitales con IA para salud humana y veterinaria',
+    proj_eyebrow:'Del Mar a la Solución', proj_title:'Proyectos sostenibles<br/>con <span class="accent">impacto real</span>',
+    filter_all:'Todos', filter_water:'Agua', filter_energy:'Energía',
+    filter_construction:'Construcción', filter_tech:'Conectividad', filter_software:'Softwares',
+    proj_wetlands_desc:'Saneamiento por zona de raíces para comunidades. Hasta 200.000 L/día.',
+    proj_usina_name:'Planta de Condensación Térmica',
+    proj_usina_desc:'Reutilización del residuo (salmuera) de plantas de ósmosis inversa. Condensación térmica para generar sal residual destinada a Saltria.',
+    proj_php_desc:'Generador híbrido de energía que combina generación hídrica, eólica y paneles solares fijos y portátiles.',
+    proj_saltria_desc:'Productos de albañilería fabricados con sal residual de las Plantas Verdemar.',
+    proj_resorts_desc:'Red de resorts sostenibles construidos con productos Saltria. Turismo de impacto cero.',
+    proj_mira_desc:'Agregador de redes Wi-Fi: combina de 3 a 6 señales débiles y genera una nueva red cableada o Wi-Fi más estable.',
+    proj_cubo_desc:'Laboratorio portátil en cubo. 4–8 lecturas ambientales simultáneas.',
+    proj_card_desc:'Tarjeta fintech verde con beneficios por acciones sostenibles.',
+    proj_pierre_desc:'Plataforma de diagnóstico por imagen con IA. Genera pre-informes en 90–120 segundos.',
+    proj_marie_desc:'Vertical de Pierre Med para medicina veterinaria. Plataforma de diagnóstico por imagen con IA.',
+    proj_comanda_desc:'Solución móvil para gestión de pedidos integrada al ecosistema.',
+    osmose_eyebrow:'Planta de Condensación Térmica', osmose_title:'De los residuos<br/>a la restauración',
+    osmose_text:'Reutilizando el residuo de las plantas de ósmosis inversa (salmuera), nuestra tecnología cierra el ciclo hídrico. La sal generada abastece a Saltria para productos de albañilería. (Proyecto experimental en desarrollo)',
+    osmose_stat1:'Reutilización de salmuera', osmose_stat2:'Desperdicio hídrico', osmose_stat3:'Destino de la sal',
+    mvv_eyebrow:'Propósito', mvv_title:'Misión, Visión y Valores',
+    mvv_mission_h:'Misión', mvv_mission_txt:'Desarrollar tecnologías sostenibles que transformen recursos naturales en soluciones accesibles y de alto impacto para personas, empresas y el planeta.',
+    mvv_vision_h:'Visión', mvv_vision_txt:'Hasta 2040, ser reconocida como una de las empresas brasileñas referentes en ecosistema de innovación verde.',
+    mvv_values_h:'Valores', val1:'Innovación con propósito', val2:'Transparencia radical',
+    val3:'Impacto medible', val4:'Colaboración sistémica', val5:'Respeto a la naturaleza', val6:'Alta competencia técnica',
+    founder_eyebrow:'Liderazgo', founder_title:'Fundador', founder_role:'Fundador · Verdemar Tech',
+    founder_bio:'Emprendedor enfocado en proyectos que reutilizan y reducen residuos. Lidera el ecosistema Verdemar Tech, desarrollando soluciones innovadoras en agua, energía, construcción y tecnología aplicada.',
+    contact_eyebrow:'Contáctenos', contact_title:'Contáctenos',
+    contact_sub:'Estamos listos para presentar nuestras soluciones y discutir alianzas.',
+    ci_email:'Correo', ci_location:'Ubicación',
+    form_name:'Nombre', form_email:'Correo', form_phone:'Teléfono', form_subject:'Asunto',
+    form_subject_placeholder:'Seleccione un asunto…', form_subject_partner:'Alianza / Inversión',
+    form_subject_demo:'Solicitar Demo', form_subject_supplier:'Proveedor',
+    form_subject_candidate:'Candidatura', form_subject_press:'Prensa / Medios', form_subject_other:'Otro',
+    form_attach:'Adjunto', form_attach_placeholder:'Clic para adjuntar (PDF, DOC, PPT)',
+    form_message:'Mensaje', form_note:'Incluya su currículo o presentación en el campo de adjunto.',
+    form_submit:'Enviar Mensaje',
+    btn_know_more:'Saber más',
+    footer_tagline:'Ecosistema de innovación sostenible. Del Mar a la Solución.',
+    footer_nav:'Empresa', footer_proj:'Proyectos', footer_contact:'Contacto',
+    footer_rights:'Todos los derechos reservados.', footer_patents:'7 patentes presentadas',
+    footer_sources:'Fuentes de Investigación',
+    sources_title:'Fuentes de Investigación',
+    sources_intro:'Referencias científicas y técnicas que respaldan las soluciones presentadas en este sitio:',
+  },
+  fr: {
+    brand:'Verdemar Tech', nav_about:'Qui Sommes-nous', nav_projects:'Projets',
+    nav_mvv:'Mission & Valeurs', nav_founder:'Fondateur', nav_contact:'Contact',
+    nav_cta:'Demander une Démo', drawer_theme:'Thème :', drawer_lang:'Langue :',
+    hero_pill:'Innovation · Technologie · Durabilité', hero_scroll:'Défiler',
+    intro_eyebrow:'Écosystème d\'Innovation Durable',
+    intro_title:'Technologie qui <span class="accent">transforme</span> le monde',
+    intro_sub:'Là où durabilité et innovation deviennent de vrais business. Nous développons des solutions pour l\'eau, l\'énergie, la construction et la connectivité.',
+    intro_cta1:'Voir les Projets', intro_cta2:'Nous Contacter',
+    stat_patents:'Brevets Déposés', stat_pipeline:'Projets en Pipeline',
+    stat_langs:'Langues du Site',
+    regen_eyebrow:'Notre Proposition', regen_title:'Régénérez<br/>vos déchets',
+    regen_text:'Nos technologies traitent les rejets complexes et restaurent le flux naturel — transformant ce qui reste en valeur réelle pour la planète et les entreprises.',
+    regen_cta:'Voir les technologies',
+    about_eyebrow:'Qui Sommes-nous', about_title:'Technologie et durabilité<br/>deviennent des <span class="accent">affaires</span>',
+    about_lead:'Verdemar Tech est un écosystème d\'innovation fondé à São Paulo, Brésil. Nous développons des projets connectant technologie, durabilité et impact social.',
+    about_cta:'Nos Projets',
+    pillar_water:'Ressources en Eau', pillar_water_desc:'Technologies de traitement et assainissement de l\'eau',
+    pillar_energy:'Énergie Propre', pillar_energy_desc:'Génération renouvelable et capture de CO₂',
+    pillar_construction:'Construction Verte', pillar_construction_desc:'Matériaux durables avec sel résiduel des Usines Verdemar',
+    pillar_fintech:'Fintech Verte', pillar_fintech_desc:'Solutions financières à vocation environnementale',
+    pillar_systems:'Systèmes & Logiciels', pillar_systems_desc:'Plateformes numériques IA pour la santé humaine et vétérinaire',
+    proj_eyebrow:'De la Mer à la Solution', proj_title:'Projets durables<br/>avec un <span class="accent">impact réel</span>',
+    filter_all:'Tous', filter_water:'Eau', filter_energy:'Énergie',
+    filter_construction:'Construction', filter_tech:'Connectivité', filter_software:'Logiciels',
+    proj_wetlands_desc:'Système de traitement par zone de racines pour communautés. Jusqu\'à 200.000 L/jour.',
+    proj_usina_name:'Usine de Condensation Thermique',
+    proj_usina_desc:'Réutilisation du résidu (saumure) des usines d\'osmose inverse. Condensation thermique pour générer du sel résiduel destiné à Saltria.',
+    proj_php_desc:'Générateur hybride d\'énergie combinant génération hydraulique, éolienne et panneaux solaires fixes et portables.',
+    proj_saltria_desc:'Produits de maçonnerie fabriqués avec le sel résiduel des Usines Verdemar.',
+    proj_resorts_desc:'Réseau de resorts durables construits avec des produits Saltria. Tourisme à impact zéro.',
+    proj_mira_desc:'Agrégateur de réseaux Wi-Fi : combine 3 à 6 signaux faibles pour créer un réseau câblé ou Wi-Fi plus stable.',
+    proj_cubo_desc:'Laboratoire portable en cube. 4–8 lectures environnementales simultanées.',
+    proj_card_desc:'Carte fintech verte avec avantages pour actions durables.',
+    proj_pierre_desc:'Plateforme d\'imagerie médicale avec IA. Génère des pré-rapports en 90–120 secondes.',
+    proj_marie_desc:'Vertical de Pierre Med pour la médecine vétérinaire. Plateforme IA pour cliniques et hôpitaux vétérinaires.',
+    proj_comanda_desc:'Solution mobile de gestion de commandes intégrée à l\'écosystème.',
+    osmose_eyebrow:'Usine de Condensation Thermique', osmose_title:'Des déchets<br/>à la restauration',
+    osmose_text:'En réutilisant le résidu des usines d\'osmose inverse (saumure), notre technologie ferme le cycle hydrique. Le sel généré alimente Saltria pour des produits de maçonnerie. (Projet expérimental en développement)',
+    osmose_stat1:'Réutilisation de la saumure', osmose_stat2:'Gaspillage hydrique', osmose_stat3:'Destination du sel',
+    mvv_eyebrow:'Objectif', mvv_title:'Mission, Vision & Valeurs',
+    mvv_mission_h:'Mission', mvv_mission_txt:'Développer des technologies durables qui transforment les ressources naturelles en solutions accessibles et à fort impact pour les personnes, les entreprises et la planète.',
+    mvv_vision_h:'Vision', mvv_vision_txt:'D\'ici 2040, être reconnue comme l\'une des entreprises brésiliennes de référence en matière d\'écosystème d\'innovation verte.',
+    mvv_values_h:'Valeurs', val1:'Innovation avec un but', val2:'Transparence radicale',
+    val3:'Impact mesurable', val4:'Collaboration systémique', val5:'Respect de la nature', val6:'Haute compétence technique',
+    founder_eyebrow:'Leadership', founder_title:'Fondateur', founder_role:'Fondateur · Verdemar Tech',
+    founder_bio:'Entrepreneur axé sur des projets qui réutilisent et réduisent les déchets. Dirige l\'écosystème Verdemar Tech, développant des solutions innovantes dans l\'eau, l\'énergie, la construction et la technologie appliquée.',
+    contact_eyebrow:'Contactez-nous', contact_title:'Prendre contact',
+    contact_sub:'Nous sommes prêts à présenter nos solutions et à discuter de partenariats.',
+    ci_email:'E-mail', ci_location:'Localisation',
+    form_name:'Nom', form_email:'E-mail', form_phone:'Téléphone', form_subject:'Sujet',
+    form_subject_placeholder:'Sélectionnez un sujet…', form_subject_partner:'Partenariat / Investissement',
+    form_subject_demo:'Demander une Démo', form_subject_supplier:'Fournisseur',
+    form_subject_candidate:'Candidature', form_subject_press:'Presse / Médias', form_subject_other:'Autre',
+    form_attach:'Pièce jointe', form_attach_placeholder:'Cliquez pour joindre (PDF, DOC, PPT)',
+    form_message:'Message', form_note:'Incluez votre CV ou présentation de l\'entreprise dans le champ pièce jointe.',
+    form_submit:'Envoyer le Message',
+    btn_know_more:'En savoir plus',
+    footer_tagline:'Écosystème d\'innovation durable. De la Mer à la Solution.',
+    footer_nav:'Entreprise', footer_proj:'Projets', footer_contact:'Contact',
+    footer_rights:'Tous droits réservés.', footer_patents:'7 brevets déposés',
+    footer_sources:'Sources de Recherche',
+    sources_title:'Sources de Recherche',
+    sources_intro:'Références scientifiques et techniques soutenant les solutions présentées sur ce site :',
+  }
+};
+
+function setLang(lang) {
+  localStorage.setItem('vm_lang', lang);
+  document.documentElement.lang = lang === 'pt' ? 'pt-BR' : lang;
+  const t = translations[lang] || translations.pt;
+  // Update all [data-i18n] elements
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (t[key] !== undefined) el.innerHTML = t[key];
+  });
+  // Update select options
+  const sel = document.getElementById('f-subject');
+  if (sel) {
+    sel.options[0].text = t.form_subject_placeholder || '';
+    const optMap = ['','form_subject_partner','form_subject_demo','form_subject_supplier','form_subject_candidate','form_subject_press','form_subject_other'];
+    for (let i=1;i<sel.options.length;i++) {
+      if (optMap[i] && t[optMap[i]]) sel.options[i].text = t[optMap[i]];
+    }
+  }
+  // Update active flags — navbar
+  document.querySelectorAll('.flag-btn').forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
+  // Update active flags — drawer
+  document.querySelectorAll('.d-flag').forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
+}
+
+/* ─── DRAWER ─── */
+function toggleDrawer() {
+  const d = document.getElementById('mobile-drawer');
+  const o = document.getElementById('drawer-overlay');
+  const h = document.getElementById('hamburger');
+  const open = d.classList.toggle('open');
+  o.classList.toggle('open', open);
+  h.classList.toggle('open', open);
+  document.body.style.overflow = open ? 'hidden' : '';
+}
+
+/* ─── FILTER PROJECTS ─── */
+function filterProjects(cat, btn) {
+  document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.project-card').forEach(c => {
+    if (cat === 'all' || c.dataset.category === cat) {
+      c.classList.remove('hidden');
+    } else {
+      c.classList.add('hidden');
+    }
+  });
+}
+
+/* ─── FORM ─── */
+function updateCharCount(ta) {
+  document.getElementById('charCount').textContent = ta.value.length;
+}
+
+// Show attachment + note when subject is candidato or fornecedor
+document.getElementById('f-subject').addEventListener('change', function() {
+  const show = ['candidato','fornecedor'].includes(this.value);
+  document.getElementById('attachField').style.display = show ? 'block' : 'none';
+  document.getElementById('formNote').classList.toggle('visible', show);
+});
+
+document.getElementById('attachFile').addEventListener('change', function() {
+  const name = this.files[0]?.name || '';
+  const lang = localStorage.getItem('vm_lang') || 'pt';
+  const t = translations[lang] || translations.pt;
+  document.getElementById('attachName').textContent = name || t.form_attach_placeholder;
+});
+
+/* ─── FORM SUBMISSION ─── */
+const form = document.getElementById('contactForm');
+form.addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const btn = document.querySelector('.btn-submit');
+  const originalHTML = btn.innerHTML;
+  
+  // Loading state
+  btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px;animation:spin 1s linear infinite"><circle cx="12" cy="12" r="10"/></svg> Enviando...';
+  btn.disabled = true;
+  btn.style.opacity = '0.7';
+  
+  try {
+    const formData = new FormData(form);
+    const response = await fetch('https://formspree.io/f/xkopabzw', {
+      method: 'POST',
+      body: formData,
+      headers: { 'Accept': 'application/json' }
+    });
+    
+    if (response.ok) {
+      // Success
+      btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px"><polyline points="20 6 9 17 4 12"/></svg> Mensagem enviada! Entraremos em contato em breve.';
+      btn.style.background = '#25d366';
+      btn.style.opacity = '1';
+      form.reset();
+      document.getElementById('charCount').textContent = '0';
+      document.getElementById('attachField').style.display = 'none';
+      document.getElementById('formNote').classList.remove('visible');
+      
+      setTimeout(() => {
+        btn.innerHTML = originalHTML;
+        btn.style.background = '';
+        btn.disabled = false;
+      }, 6000);
+    } else {
+      throw new Error('Erro ao enviar');
+    }
+  } catch (error) {
+    // Error
+    btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg> Erro ao enviar. Tente novamente.';
+    btn.style.background = '#c0392b';
+    btn.style.opacity = '1';
+    setTimeout(() => {
+      btn.innerHTML = originalHTML;
+      btn.style.background = '';
+      btn.disabled = false;
+    }, 4000);
+  }
+});
+
+function submitForm(e) {
+  // Deprecated - now handled by form.addEventListener above
+  if(e) e.preventDefault();
+}
+
+/* ─── SCROLL REVEAL ─── */
+const rvObs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); rvObs.unobserve(e.target); }});
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => rvObs.observe(el));
+
+/* ─── SCROLL TO TOP ─── */
+const stBtn = document.getElementById('scroll-top');
+window.addEventListener('scroll', () => stBtn.classList.toggle('visible', window.scrollY > 400), { passive:true });
+
+/* ─── NAVBAR shadow ─── */
+window.addEventListener('scroll', () => {
+  const nav = document.getElementById('navbar');
+  nav.style.boxShadow = window.scrollY > 50 ? '0 4px 28px rgba(0,0,0,.3)' : 'none';
+}, { passive:true });
+
+/* ─── SOURCES MODAL ─── */
+document.getElementById('sourcesBtn').addEventListener('click', () => {
+  document.getElementById('sourcesModal').classList.add('open');
+});
+document.getElementById('sourcesClose').addEventListener('click', () => {
+  document.getElementById('sourcesModal').classList.remove('open');
+});
+document.getElementById('sourcesModal').addEventListener('click', e => {
+  if (e.target === e.currentTarget) document.getElementById('sourcesModal').classList.remove('open');
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') document.getElementById('sourcesModal').classList.remove('open');
+});
+
+/* ─── INIT ─── */
+(function init() {
+  // Theme
+  const theme = localStorage.getItem('vm_theme') || 'dark';
+  document.documentElement.setAttribute('data-theme', theme);
+  // Language
+  const lang = localStorage.getItem('vm_lang') || 'pt';
+  setLang(lang);
+})();
+</script>
+</body>
+</html>
